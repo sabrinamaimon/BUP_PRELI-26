@@ -169,9 +169,32 @@ body.lang-bn {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.95rem 2.5rem;
+  gap: 1rem;
+  padding: 0.75rem 1.5rem;
   width: 100%;
   max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(16, 185, 129, 0.4) transparent;
+  -webkit-overflow-scrolling: touch;
+}
+
+.desktop-nav::-webkit-scrollbar {
+  height: 5px;
+}
+
+.desktop-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.desktop-nav::-webkit-scrollbar-thumb {
+  background: rgba(16, 185, 129, 0.35);
+  border-radius: 9999px;
+}
+
+.desktop-nav::-webkit-scrollbar-thumb:hover {
+  background: rgba(16, 185, 129, 0.7);
 }
 
 .brand-section {
@@ -181,6 +204,8 @@ body.lang-bn {
   text-decoration: none;
   color: var(--text-main);
   cursor: pointer;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .brand-logo-icon {
@@ -193,6 +218,7 @@ body.lang-bn {
   justify-content: center;
   box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
   color: #fff;
+  flex-shrink: 0;
 }
 
 .brand-title {
@@ -202,6 +228,7 @@ body.lang-bn {
   background: linear-gradient(to right, var(--text-main), var(--primary-600));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  white-space: nowrap;
 }
 
 body.theme-dark .brand-title {
@@ -213,11 +240,13 @@ body.theme-dark .brand-title {
 .nav-tabs-group {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.35rem;
   background: rgba(16, 185, 129, 0.08);
   padding: 0.35rem;
   border-radius: var(--radius-full);
   border: 1px solid var(--border-glass);
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .nav-tab-btn {
@@ -225,15 +254,17 @@ body.theme-dark .brand-title {
   border: none;
   color: var(--text-muted);
   font-family: inherit;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 700;
-  padding: 0.55rem 1.25rem;
+  padding: 0.5rem 1.05rem;
   border-radius: var(--radius-full);
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.55rem;
+  gap: 0.5rem;
   transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .nav-tab-btn:hover {
@@ -254,20 +285,24 @@ body.theme-dark .nav-tab-btn:hover {
 .nav-actions-group {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.65rem;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .status-pill {
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.45rem 1.1rem;
+  gap: 0.55rem;
+  padding: 0.45rem 1rem;
   background: rgba(16, 185, 129, 0.12);
   border: 1px solid rgba(16, 185, 129, 0.3);
   border-radius: var(--radius-full);
-  font-size: 0.875rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: var(--primary-700);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 body.theme-dark .status-pill {
