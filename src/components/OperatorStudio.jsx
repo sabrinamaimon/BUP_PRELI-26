@@ -12,7 +12,9 @@ import {
   Clock,
   Battery,
   Sun,
-  ShieldCheck
+  ShieldCheck,
+  Zap,
+  Coffee
 } from 'lucide-react';
 import { formatNumber, translations } from '../utils/localization';
 
@@ -116,13 +118,29 @@ export function OperatorStudio({
     setOperatorNotes(operatorNotes.filter((_, idx) => idx !== index));
   };
 
+  const quickPresets = [
+    { label: "🌦️ Solar Drop 80% (1-3 PM)", text: "Expect an 80% reduction in rooftop solar during the 1-3 PM maintenance window." },
+    { label: "🔋 Hold Reserve 150 kWh (6-9 PM)", text: "Keep at least 150 kWh in reserve from 6 PM until 9 PM." },
+    { label: "⚡ Lock Charge (2-4 PM)", text: "Do not charge the battery between 2 PM and 4 PM." },
+    { label: "🛑 Lock Discharge (8-11 AM)", text: "Do not discharge the battery between 8 AM and 11 AM." },
+    { label: "☕ Cafeteria Distractor", text: "The campus cafeteria menu changes tomorrow morning." }
+  ];
+
+  const handleQuickPreset = (presetText) => {
+    if (operatorNotes.length >= 3) {
+      alert("Maximum 3 operator notes allowed. Please remove one first.");
+      return;
+    }
+    setOperatorNotes([...operatorNotes, presetText]);
+  };
+
   return (
     <div className="glass-panel" style={{ padding: '1.75rem', marginBottom: '2rem' }}>
       {/* Title & Speech Controls */}
       <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--border-glass)', paddingBottom: '1.25rem' }}>
         <div>
-          <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <Sparkles size={20} color="var(--primary-400)" />
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+            <Sparkles size={20} color="var(--primary-600)" />
             {t.operatorStudioTitle}
           </h2>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
@@ -137,9 +155,9 @@ export function OperatorStudio({
             className="btn-secondary"
             onClick={handleListenSummary}
             title={t.listenSummary}
-            style={{ borderColor: isSpeaking ? 'var(--primary-400)' : 'var(--border-glass)' }}
+            style={{ borderColor: isSpeaking ? 'var(--primary-500)' : 'var(--border-glass)' }}
           >
-            {isSpeaking ? <VolumeX size={18} color="var(--accent-rose)" /> : <Volume2 size={18} color="var(--primary-400)" />}
+            {isSpeaking ? <VolumeX size={18} color="var(--accent-rose)" /> : <Volume2 size={18} color="var(--primary-600)" />}
             <span>{isSpeaking ? t.speaking : t.listenSummary}</span>
           </button>
 
@@ -151,6 +169,25 @@ export function OperatorStudio({
           >
             {isListening ? <MicOff size={22} /> : <Mic size={22} />}
           </button>
+        </div>
+      </div>
+
+      {/* 1-Click Quick Preset Chips */}
+      <div style={{ marginBottom: '1.5rem' }}>
+        <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.5rem' }}>
+          {lang === 'bn' ? 'দ্রুত প্রিসেট নির্দেশিকা (১-ক্লিক টেস্ট)' : 'Quick Directive Presets (1-Click Instant Test)'}
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+          {quickPresets.map((qp, idx) => (
+            <button
+              key={idx}
+              className="scenario-pill"
+              onClick={() => handleQuickPreset(qp.text)}
+              style={{ fontSize: '0.75rem', padding: '0.35rem 0.75rem' }}
+            >
+              {qp.label}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -169,10 +206,10 @@ export function OperatorStudio({
               <div 
                 key={index} 
                 className="glass-panel" 
-                style={{ padding: '0.85rem 1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', background: 'rgba(255, 255, 255, 0.02)' }}
+                style={{ padding: '0.85rem 1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', background: 'var(--bg-surface)' }}
               >
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem', flex: 1 }}>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 800, padding: '0.2rem 0.5rem', background: 'rgba(16, 185, 129, 0.15)', color: 'var(--primary-300)', borderRadius: '4px' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 800, padding: '0.2rem 0.5rem', background: 'rgba(16, 185, 129, 0.15)', color: 'var(--primary-700)', borderRadius: '4px' }}>
                     #{formatNumber(index + 1, lang)}
                   </span>
                   <span style={{ fontSize: '0.875rem', color: 'var(--text-main)' }}>{note}</span>
@@ -204,11 +241,11 @@ export function OperatorStudio({
                 placeholder={isListening ? t.voiceListening : t.voiceInputPrompt}
                 style={{
                   flex: 1,
-                  background: 'rgba(255, 255, 255, 0.05)',
+                  background: 'var(--bg-surface)',
                   border: '1px solid var(--border-glass)',
                   borderRadius: 'var(--radius-sm)',
                   padding: '0.65rem 1rem',
-                  color: '#fff',
+                  color: 'var(--text-main)',
                   fontFamily: 'inherit',
                   fontSize: '0.875rem',
                   outline: 'none'
@@ -233,7 +270,7 @@ export function OperatorStudio({
             <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-main)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               {t.parsedDirectivesTitle}
             </span>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.75rem', color: 'var(--primary-400)' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.75rem', color: 'var(--primary-700)', fontWeight: 700 }}>
               <ShieldCheck size={14} />
               <span>{t.guardrailsPassed}</span>
             </div>
@@ -250,7 +287,7 @@ export function OperatorStudio({
               >
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', fontWeight: 700, color: isNoOp ? 'var(--text-muted)' : 'var(--primary-300)' }}>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', fontWeight: 700, color: isNoOp ? 'var(--text-muted)' : 'var(--primary-700)' }}>
                       {dir.directive_type}
                     </span>
                   </div>
@@ -260,9 +297,9 @@ export function OperatorStudio({
                     fontWeight: 700,
                     padding: '0.2rem 0.6rem',
                     borderRadius: 'var(--radius-full)',
-                    background: dir.applies ? 'rgba(16, 185, 129, 0.15)' : 'rgba(148, 163, 184, 0.15)',
-                    color: dir.applies ? 'var(--primary-400)' : 'var(--text-muted)',
-                    border: `1px solid ${dir.applies ? 'rgba(16, 185, 129, 0.3)' : 'rgba(148, 163, 184, 0.2)'}`
+                    background: dir.applies ? 'rgba(16, 185, 129, 0.15)' : 'rgba(100, 116, 139, 0.15)',
+                    color: dir.applies ? 'var(--primary-700)' : 'var(--text-muted)',
+                    border: `1px solid ${dir.applies ? 'rgba(16, 185, 129, 0.3)' : 'rgba(100, 116, 139, 0.2)'}`
                   }}>
                     {dir.applies ? t.appliesBadge : t.noOpBadge}
                   </span>
@@ -276,25 +313,25 @@ export function OperatorStudio({
                   <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '0.4rem', fontSize: '0.75rem' }}>
                     <span style={{ color: 'var(--text-muted)' }}>{t.affectedHours}:</span>
                     {hours.map(h => (
-                      <span key={h} style={{ fontFamily: 'var(--font-mono)', padding: '0.15rem 0.4rem', borderRadius: '4px', background: 'rgba(52, 211, 153, 0.15)', color: 'var(--primary-200)' }}>
+                      <span key={h} style={{ fontFamily: 'var(--font-mono)', padding: '0.15rem 0.4rem', borderRadius: '4px', background: 'rgba(16, 185, 129, 0.15)', color: 'var(--primary-800)', fontWeight: 600 }}>
                         {formatNumber(h, lang)}:00
                       </span>
                     ))}
 
                     {dir.structured_adjustment.factor !== undefined && (
-                      <span style={{ marginLeft: 'auto', fontFamily: 'var(--font-mono)', color: 'var(--accent-amber)' }}>
+                      <span style={{ marginLeft: 'auto', fontFamily: 'var(--font-mono)', color: 'var(--accent-amber)', fontWeight: 700 }}>
                         Factor: {dir.structured_adjustment.factor}
                       </span>
                     )}
 
                     {dir.structured_adjustment.minimum_energy_kwh !== undefined && (
-                      <span style={{ marginLeft: 'auto', fontFamily: 'var(--font-mono)', color: '#60a5fa' }}>
+                      <span style={{ marginLeft: 'auto', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)', fontWeight: 700 }}>
                         Min: {dir.structured_adjustment.minimum_energy_kwh} kWh
                       </span>
                     )}
 
                     {dir.structured_adjustment.max_grid_kwh !== undefined && (
-                      <span style={{ marginLeft: 'auto', fontFamily: 'var(--font-mono)', color: '#f472b6' }}>
+                      <span style={{ marginLeft: 'auto', fontFamily: 'var(--font-mono)', color: 'var(--accent-rose)', fontWeight: 700 }}>
                         Cap: {dir.structured_adjustment.max_grid_kwh} kWh
                       </span>
                     )}

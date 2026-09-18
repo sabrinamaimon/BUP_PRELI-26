@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { Navbar } from './components/Navbar';
 import { MetricCards } from './components/MetricCards';
+import { PowerFlowVisualizer } from './components/PowerFlowVisualizer';
 import { OperatorStudio } from './components/OperatorStudio';
 import { DispatchChart } from './components/DispatchChart';
 import { ScheduleTable } from './components/ScheduleTable';
@@ -157,6 +158,13 @@ export default function App() {
         {/* Tab View Routing */}
         {activeTab === 'overview' && (
           <>
+            {/* Live 24-Hour Power Flow Simulator & Savings Header */}
+            <PowerFlowVisualizer
+              scheduleData={scheduleData}
+              rawScenario={activeScenario}
+              lang={lang}
+            />
+
             {/* Visual 24-Hour Dispatch Chart & SOC Line */}
             <DispatchChart
               scheduleData={scheduleData}
