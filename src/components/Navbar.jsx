@@ -195,33 +195,6 @@ export function Navbar({
               </button>
             </div>
 
-            {/* Language & Theme Controls directly inside Drawer */}
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.6rem',
-              padding: '0.65rem 0.85rem',
-              background: 'rgba(16, 185, 129, 0.09)',
-              borderRadius: 'var(--radius-sm)',
-              border: '1.5px solid var(--border-glass)'
-            }}>
-              <button
-                className="icon-toggle-btn"
-                onClick={toggleLanguage}
-                style={{ flex: 1, justifyContent: 'center', padding: '0.55rem 0.85rem', fontSize: '0.875rem' }}
-              >
-                <Globe size={16} strokeWidth={2.2} color="var(--primary-600)" />
-                <span style={{ fontWeight: 800 }}>{lang === 'en' ? 'বাংলা সংস্করণ' : 'English Version'}</span>
-              </button>
-              <button
-                className="icon-toggle-btn"
-                onClick={toggleTheme}
-                style={{ padding: '0.55rem 0.85rem' }}
-                title="Toggle Theme"
-              >
-                {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
-              </button>
-            </div>
 
             <div className="drawer-links">
               {navTabs.map(tab => {
