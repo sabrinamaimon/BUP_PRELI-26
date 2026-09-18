@@ -119,50 +119,50 @@ export default function App() {
       />
 
       <main className="main-content">
-        {/* Scenario Selector & Quick Action Bar (Full Width) */}
-        <div className="glass-panel scenario-bar">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
-            <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-              {t.scenarioLabel}:
-            </span>
-            <div className="scenario-pills-wrap">
-              {sampleScenarios.map((sc, idx) => (
-                <button
-                  key={sc.id}
-                  className={`scenario-pill ${selectedScenarioIndex === idx ? 'active' : ''}`}
-                  onClick={() => setSelectedScenarioIndex(idx)}
-                >
-                  <span>{sc.id}</span>
-                  <span style={{ opacity: 0.8, marginLeft: '0.4rem', fontSize: '0.775rem' }}>
-                    ({formatNumber(sc.operator_notes.length, lang)} {lang === 'bn' ? 'নোট' : 'notes'})
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="scenario-actions">
-            <button 
-              className="btn-primary" 
-              onClick={handleReoptimize}
-              disabled={isOptimizing}
-            >
-              <RotateCw size={18} className={isOptimizing ? 'pulse-dot' : ''} />
-              <span>{isOptimizing ? t.optimizing : t.runOptimization}</span>
-            </button>
-          </div>
-        </div>
-
-        {/* High-Impact Full-Width Statistics Showcase Bar */}
-        <MetricCards
-          scheduleData={scheduleData}
-          rawScenario={activeScenario}
-          lang={lang}
-        />
-
         {/* Tab View Routing */}
         {activeTab === 'overview' && (
           <>
+            {/* Scenario Selector & Quick Action Bar (Full Width) */}
+            <div className="glass-panel scenario-bar">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                  {t.scenarioLabel}:
+                </span>
+                <div className="scenario-pills-wrap">
+                  {sampleScenarios.map((sc, idx) => (
+                    <button
+                      key={sc.id}
+                      className={`scenario-pill ${selectedScenarioIndex === idx ? 'active' : ''}`}
+                      onClick={() => setSelectedScenarioIndex(idx)}
+                    >
+                      <span>{sc.id}</span>
+                      <span style={{ opacity: 0.8, marginLeft: '0.4rem', fontSize: '0.775rem' }}>
+                        ({formatNumber(sc.operator_notes.length, lang)} {lang === 'bn' ? 'নোট' : 'notes'})
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="scenario-actions">
+                <button 
+                  className="btn-primary" 
+                  onClick={handleReoptimize}
+                  disabled={isOptimizing}
+                >
+                  <RotateCw size={18} className={isOptimizing ? 'pulse-dot' : ''} />
+                  <span>{isOptimizing ? t.optimizing : t.runOptimization}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* High-Impact Full-Width Statistics Showcase Bar */}
+            <MetricCards
+              scheduleData={scheduleData}
+              rawScenario={activeScenario}
+              lang={lang}
+            />
+
             {/* Live 24-Hour Power Flow Simulator with Circular Gauge & Savings */}
             <PowerFlowVisualizer
               scheduleData={scheduleData}
@@ -175,15 +175,6 @@ export default function App() {
               scheduleData={scheduleData}
               rawScenario={activeScenario}
               baselineData={baselineData}
-              lang={lang}
-            />
-
-            {/* Operator Directives Studio Preview */}
-            <OperatorStudio
-              operatorNotes={operatorNotes}
-              setOperatorNotes={setOperatorNotes}
-              parsedDirectives={parsedDirectives}
-              planSummary={scheduleData.plan_summary}
               lang={lang}
             />
           </>
