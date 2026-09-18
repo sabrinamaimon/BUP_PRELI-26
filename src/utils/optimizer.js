@@ -22,7 +22,7 @@
  * Optimizes the 24-hour energy schedule
  * @param {object} scenario
  * @param {Array} directives Interpreted operator directives
- * @returns {object} Canonical response shape
+ * @returns {object} Canonical response shape with decision intelligence
  */
 export function optimizeEnergySchedule(scenario, directives = []) {
   const { scenario_id, hours, battery } = scenario;
@@ -39,6 +39,7 @@ export function optimizeEnergySchedule(scenario, directives = []) {
   const chargeAllowed = new Array(24).fill(true);
   const dischargeAllowed = new Array(24).fill(true);
   const maxGridCap = new Array(24).fill(Infinity);
+  const activeDirectiveNotes = new Array(24).fill(null);
 
   for (let h = 0; h < 24; h++) {
     effectiveSolar[h] = hours[h].solar_kwh;
@@ -54,6 +55,7 @@ export function optimizeEnergySchedule(scenario, directives = []) {
       dirHours.forEach(h => {
         if (h >= 0 && h < 24) {
           effectiveSolar[h] = hours[h].solar_kwh * factor;
+          activeDirectiveNotes[h] = `Solar capacity reduced to ${Math.round(factor * 100)}% (usable factor ${factor})`;
         }
       });
     } else if (dir.directive_type === 'minimum_battery_reserve') {
@@ -61,20 +63,30 @@ export function optimizeEnergySchedule(scenario, directives = []) {
       dirHours.forEach(h => {
         if (h >= 0 && h < 24) {
           minReserve[h] = Math.max(minReserve[h], elevatedMin);
+          activeDirectiveNotes[h] = `Elevated battery reserve threshold active (${elevatedMin} kWh)`;
         }
       });
     } else if (dir.directive_type === 'no_charge_window') {
       dirHours.forEach(h => {
-        if (h >= 0 && h < 24) chargeAllowed[h] = false;
+        if (h >= 0 && h < 24) {
+          chargeAllowed[h] = false;
+          activeDirectiveNotes[h] = 'Battery charging prohibited during operational window';
+        }
       });
     } else if (dir.directive_type === 'no_discharge_window') {
       dirHours.forEach(h => {
-        if (h >= 0 && h < 24) dischargeAllowed[h] = false;
+        if (h >= 0 && h < 24) {
+          dischargeAllowed[h] = false;
+          activeDirectiveNotes[h] = 'Battery discharging prohibited during operational window';
+        }
       });
     } else if (dir.directive_type === 'max_grid_window') {
       const cap = dir.structured_adjustment.max_grid_kwh ?? Infinity;
       dirHours.forEach(h => {
-        if (h >= 0 && h < 24) maxGridCap[h] = Math.min(maxGridCap[h], cap);
+        if (h >= 0 && h < 24) {
+          maxGridCap[h] = Math.min(maxGridCap[h], cap);
+          activeDirectiveNotes[h] = `Grid import capped at maximum ${cap} kWh`;
+        }
       });
     }
   });
@@ -93,39 +105,28 @@ export function optimizeEnergySchedule(scenario, directives = []) {
   }
 
   // 3. Multi-Pass Greedy Arbitrage Optimizer
-  // Start with flat battery (idle all day)
   const charge = new Array(24).fill(0);
   const discharge = new Array(24).fill(0);
 
-  // Helper to check battery SOC bounds if we apply delta to hour h
   function isFeasible(cArr, dArr) {
     let energy = initialEnergy;
     for (let h = 0; h < 24; h++) {
       energy += cArr[h] - dArr[h];
-      // Check physical bounds
       if (energy < minReserve[h] - 1e-4 || energy > capacity + 1e-4) {
         return false;
       }
-      // Check rate limits
       if (cArr[h] > (chargeAllowed[h] ? maxChargeRate : 0) + 1e-4) return false;
       if (dArr[h] > (dischargeAllowed[h] ? maxDischargeRate : 0) + 1e-4) return false;
-      // Cannot discharge more than net demand (no grid export)
       if (dArr[h] > netDemand[h] + 1e-4) return false;
     }
-    // Check end-of-day neutrality: final energy must equal initial energy
     return Math.abs(energy - initialEnergy) < 1e-3;
   }
 
   // Pass A: Absorb surplus solar if beneficial
   for (let h = 0; h < 24; h++) {
     if (surplusSolar[h] > 0 && chargeAllowed[h]) {
-      // Find subsequent expensive hours where we can discharge this stored solar
-      const maxPossibleCharge = Math.min(
-        surplusSolar[h],
-        maxChargeRate - charge[h]
-      );
+      const maxPossibleCharge = Math.min(surplusSolar[h], maxChargeRate - charge[h]);
       if (maxPossibleCharge > 0) {
-        // Try pairing with discharge in highest tariff hour later
         let bestDischargeHour = -1;
         let maxTariff = -Infinity;
         for (let dh = h + 1; dh < 24; dh++) {
@@ -144,14 +145,11 @@ export function optimizeEnergySchedule(scenario, directives = []) {
             maxDischargeRate - discharge[bestDischargeHour]
           );
 
-          // Test stepwise injection
           let step = alloc;
           while (step > 0.5) {
             charge[h] += step;
             discharge[bestDischargeHour] += step;
-            if (isFeasible(charge, discharge)) {
-              break;
-            }
+            if (isFeasible(charge, discharge)) break;
             charge[h] -= step;
             discharge[bestDischargeHour] -= step;
             step /= 2;
@@ -161,19 +159,18 @@ export function optimizeEnergySchedule(scenario, directives = []) {
     }
   }
 
-  // Pass B: Economic Tariff Arbitrage (Charge during cheapest off-peak, discharge during expensive peak)
+  // Pass B: Economic Tariff Arbitrage
   const sortedPairs = [];
   for (let ch = 0; ch < 24; ch++) {
     if (!chargeAllowed[ch]) continue;
     for (let dh = 0; dh < 24; dh++) {
       if (ch === dh || !dischargeAllowed[dh]) continue;
       const profit = hours[dh].tariff_bdt_per_kwh - hours[ch].tariff_bdt_per_kwh;
-      if (profit > 0.5) { // Meaningful economic arbitrage margin
+      if (profit > 0.5) {
         sortedPairs.push({ ch, dh, profit });
       }
     }
   }
-  // Sort pairs by maximum tariff differential descending
   sortedPairs.sort((a, b) => b.profit - a.profit);
 
   for (const pair of sortedPairs) {
@@ -184,15 +181,13 @@ export function optimizeEnergySchedule(scenario, directives = []) {
       netDemand[dh] - discharge[dh]
     );
 
-    const alloc = Math.min(maxChargeAvail, maxDischargeAvail, 25); // increment block
+    const alloc = Math.min(maxChargeAvail, maxDischargeAvail, 25);
     if (alloc > 0.5) {
       let step = alloc;
       while (step >= 0.5) {
         charge[ch] += step;
         discharge[dh] += step;
-        if (isFeasible(charge, discharge)) {
-          break; // successfully applied
-        }
+        if (isFeasible(charge, discharge)) break;
         charge[ch] -= step;
         discharge[dh] -= step;
         step /= 2;
@@ -200,18 +195,23 @@ export function optimizeEnergySchedule(scenario, directives = []) {
     }
   }
 
-  // 4. Construct Final Validated Hourly Plan
+  // 4. Construct Final Validated Hourly Plan & Explainability Intelligence
   let currentEnergy = initialEnergy;
   const hourlyPlan = [];
   let totalGridKwh = 0;
   let totalCostBdt = 0;
   let peakGridKwh = 0;
 
+  // Find min/max tariffs for explanations
+  const minTariffVal = Math.min(...hours.map(h => h.tariff_bdt_per_kwh));
+  const maxTariffVal = Math.max(...hours.map(h => h.tariff_bdt_per_kwh));
+
   for (let h = 0; h < 24; h++) {
     const demand = hours[h].demand_kwh;
     const solar = solarUsed[h];
     const ch = charge[h];
     const dis = discharge[h];
+    const tariff = hours[h].tariff_bdt_per_kwh;
 
     let action = 'idle';
     let batteryKwh = 0;
@@ -226,16 +226,35 @@ export function optimizeEnergySchedule(scenario, directives = []) {
       currentEnergy -= batteryKwh;
     }
 
-    // Energy balance equation:
-    // grid_kwh + solar_used_kwh + battery_discharge_kwh = demand_kwh + battery_charge_kwh
-    // => grid_kwh = demand_kwh + battery_charge_kwh - solar_used_kwh - battery_discharge_kwh
     const gridKwhRaw = demand + (action === 'charge' ? batteryKwh : 0) - solar - (action === 'discharge' ? batteryKwh : 0);
     const gridKwh = Math.max(0, Math.round(gridKwhRaw * 100) / 100);
 
-    const cost = gridKwh * hours[h].tariff_bdt_per_kwh;
+    const cost = gridKwh * tariff;
     totalGridKwh += gridKwh;
     totalCostBdt += cost;
     if (gridKwh > peakGridKwh) peakGridKwh = gridKwh;
+
+    // Decision Intelligence Rationale (Why this action?)
+    let rationaleEn = "";
+    let rationaleBn = "";
+
+    if (action === 'discharge') {
+      const savedMoney = Math.round(batteryKwh * tariff);
+      rationaleEn = `Peak tariff period (৳${tariff}/kWh). Discharged ${batteryKwh} kWh from BESS to shave grid import, saving ৳${savedMoney}.`;
+      rationaleBn = `পিক ট্যারিফ সময় (৳${tariff}/kWh)। গ্রিড খরচ বাঁচাতে ব্যাটারি থেকে ${batteryKwh} kWh ডিসচার্জ করা হয়েছে (সাশ্রয়: ৳${savedMoney})।`;
+    } else if (action === 'charge') {
+      rationaleEn = `Off-peak low tariff window (৳${tariff}/kWh). Stored ${batteryKwh} kWh to discharge during later peak hours.`;
+      rationaleBn = `অফ-পিক সস্তা বিদ্যুৎ সময় (৳${tariff}/kWh)। পরবর্তী পিক-আওয়ারে ব্যবহারের জন্য ব্যাটারিতে ${batteryKwh} kWh চার্জ করা হয়েছে।`;
+    } else if (solar >= demand) {
+      rationaleEn = `Solar generation (${solar} kWh) completely covers 100% of campus demand. Zero grid electricity required.`;
+      rationaleBn = `সৌরশক্তি (${solar} kWh) দিয়ে ক্যাম্পাসের ১০০% বিদ্যুৎ চাহিদা পূরণ হয়েছে। কোনো গ্রিড বিদ্যুৎ লাগেনি।`;
+    } else if (activeDirectiveNotes[h]) {
+      rationaleEn = `Operating under directive constraint: ${activeDirectiveNotes[h]}. Direct dispatch balanced.`;
+      rationaleBn = `অপারেটর নির্দেশিকা অনুযায়ী পরিচালিত: ${activeDirectiveNotes[h]}। সরাসরি গ্রিড ভারসাম্য বজায় রাখা হয়েছে।`;
+    } else {
+      rationaleEn = `Standard equilibrium dispatch. Direct grid supply complementing available rooftop solar.`;
+      rationaleBn = `স্বাভাবিক ভারসাম্যপূর্ণ বিদ্যুৎ সরবরাহ। সৌরশক্তির পাশাপাশি প্রয়োজনীয় গ্রিড বিদ্যুৎ সরবরাহ করা হয়েছে।`;
+    }
 
     hourlyPlan.push({
       hour: h,
@@ -243,14 +262,16 @@ export function optimizeEnergySchedule(scenario, directives = []) {
       solar_used_kwh: Math.round(solar * 100) / 100,
       battery_action: action,
       battery_kwh: batteryKwh,
-      battery_energy_after_kwh: Math.round(currentEnergy * 100) / 100
+      battery_energy_after_kwh: Math.round(currentEnergy * 100) / 100,
+      decision_rationale_en: rationaleEn,
+      decision_rationale_bn: rationaleBn,
+      directive_active: Boolean(activeDirectiveNotes[h]),
+      directive_note: activeDirectiveNotes[h]
     });
   }
 
-  // Ensure strict end-of-day equality
   hourlyPlan[23].battery_energy_after_kwh = initialEnergy;
 
-  // Round high-level summary metrics
   totalGridKwh = Math.round(totalGridKwh * 100) / 100;
   totalCostBdt = Math.round(totalCostBdt * 100) / 100;
   peakGridKwh = Math.round(peakGridKwh * 100) / 100;
@@ -269,6 +290,15 @@ export function optimizeEnergySchedule(scenario, directives = []) {
 }
 
 /**
+ * Computes a baseline unconstrained schedule (with 0 directives) for Diff Comparison
+ * @param {object} scenario
+ * @returns {object} Baseline schedule data
+ */
+export function getBaselineSchedule(scenario) {
+  return optimizeEnergySchedule(scenario, []);
+}
+
+/**
  * Validates a candidate schedule against the official 7-category judge criteria
  * @param {object} scenario
  * @param {object} response
@@ -279,7 +309,6 @@ export function auditScheduleCorrectness(scenario, response) {
   const { hours, battery } = scenario;
   const { hourly_plan, total_grid_kwh, total_cost_bdt, peak_grid_kwh } = response;
 
-  // Check 1: 24 hours present
   const has24 = Array.isArray(hourly_plan) && hourly_plan.length === 24;
   checks.push({
     name: "24-Hour Horizon Completeness",
@@ -291,7 +320,6 @@ export function auditScheduleCorrectness(scenario, response) {
     return { passed: false, checks, score: 0 };
   }
 
-  // Check 2: Energy balance holds every hour
   let energyBalancePassed = true;
   for (let h = 0; h < 24; h++) {
     const entry = hourly_plan[h];
@@ -311,7 +339,6 @@ export function auditScheduleCorrectness(scenario, response) {
     details: energyBalancePassed ? "Equilibrium maintained for all 24 hours (tolerance <= 0.05 kWh)" : "Discrepancy detected in hourly balance equation"
   });
 
-  // Check 3: Battery End-of-Day Neutrality
   const finalEnergy = hourly_plan[23].battery_energy_after_kwh;
   const neutralityPassed = Math.abs(finalEnergy - battery.initial_energy_kwh) < 0.05;
   checks.push({
@@ -320,7 +347,6 @@ export function auditScheduleCorrectness(scenario, response) {
     details: neutralityPassed ? `Starting ${battery.initial_energy_kwh} kWh == Ending ${finalEnergy} kWh` : `Imbalance: Started at ${battery.initial_energy_kwh} kWh, ended at ${finalEnergy} kWh`
   });
 
-  // Check 4: Battery Rate Limits & Physical Bounds
   let boundsPassed = true;
   for (let h = 0; h < 24; h++) {
     const entry = hourly_plan[h];
@@ -343,7 +369,6 @@ export function auditScheduleCorrectness(scenario, response) {
     details: boundsPassed ? `State of charge constrained between [${battery.minimum_energy_kwh}, ${battery.capacity_kwh}] kWh` : "Battery bounds or hourly charge/discharge limit exceeded"
   });
 
-  // Check 5: Recalculated Totals Accuracy
   let calcGrid = 0;
   let calcCost = 0;
   let calcPeak = 0;
