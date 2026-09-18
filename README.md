@@ -1,14 +1,14 @@
-# ⚡ GridWise — Autonomous Smart Campus Energy Optimization Platform
+# GridWise — Autonomous Smart Campus Energy Optimization Platform
 **BUP CSE Fest 2026 Hackathon — Online Preliminary Round**
 
 [![API Readiness](https://img.shields.io/badge/API_Status-100%25_Readiness_HTTP_200-10b981.svg?style=for-the-badge&logo=fastapi)](https://bup-preli-26.onrender.com/health)
 [![Vercel Deployment](https://img.shields.io/badge/Vercel_Frontend-Live_Production-000000.svg?style=for-the-badge&logo=vercel)](https://bup-preli-26.vercel.app)
 [![Mathematical Solver](https://img.shields.io/badge/Solver-SciPy_HiGHS_LP-2563eb.svg?style=for-the-badge&logo=scipy)](https://scipy.org)
-[![LLM Intelligence](https://img.shields.io/badge/LLM_Engine-Groq_Llama--3.3--70B-f59e0b.svg?style=for-the-badge&logo=meta)](https://groq.com)
+[![LLM Engine](https://img.shields.io/badge/LLM_Engine-Groq_Llama--3.3--70B-f59e0b.svg?style=for-the-badge&logo=meta)](https://groq.com)
 
 ---
 
-## 🚀 Live Production Deployments
+## Live Deployments
 
 The platform is deployed across dual high-availability cloud environments for zero-downtime evaluation:
 
@@ -18,13 +18,13 @@ The platform is deployed across dual high-availability cloud environments for ze
 | **Interactive Cleantech Platform (Vercel)** | [`https://bup-preli-26.vercel.app`](https://bup-preli-26.vercel.app) | Full-stack interactive dashboard, visual dispatch simulator, bilingual toggle |
 | **Source Code Repository** | [`https://github.com/sabrinamaimon/BUP_PRELI-26`](https://github.com/sabrinamaimon/BUP_PRELI-26) | Complete source tree, Docker orchestration, and test suites |
 
-### ⚡ Canonical Judging Endpoints
-* **`GET /health`** &rarr; Readiness endpoint returning HTTP 200 `{"status": "ok"}` (Zero login, zero VPN, CORS enabled).
-* **`POST /optimize-energy`** &rarr; 24-hour campus energy scheduling & natural language operator directive interpretation endpoint.
+### Canonical Judging Endpoints
+* **`GET /health`**: Readiness endpoint returning HTTP 200 `{"status": "ok"}` (Zero login, zero VPN, CORS enabled).
+* **`POST /optimize-energy`**: 24-hour campus energy scheduling and natural language operator directive interpretation endpoint.
 
 ---
 
-## 🏛️ System Architecture
+## System Architecture
 
 ```
                                   ┌─────────────────────────────┐
@@ -67,7 +67,7 @@ The platform is deployed across dual high-availability cloud environments for ze
 
 ---
 
-## 🎯 Supported Operator Directives
+## Supported Operator Directives
 
 The system strictly supports all 6 canonical directive classes specified in the Problem Statement:
 
@@ -80,38 +80,49 @@ The system strictly supports all 6 canonical directive classes specified in the 
 | `max_grid_window` | Caps grid electricity procurement during designated hours. | `true` | `{"hours": [int...], "max_grid_kwh": float}` |
 | `no_op` | Irrelevant operational note or distractor (zero schedule impact). | `false` | `null` |
 
-> ⏱️ **Time Window Convention**: All time windows follow the whole-hour rule where the **start hour is included and the end hour is excluded** `[start, end)`.  
-> *Example: "1 PM to 3 PM" &rarr; `[13, 14]` (hour 15 is excluded).*
+> **Time Window Convention**: All time windows follow the whole-hour rule where the **start hour is included and the end hour is excluded** `[start, end)`.  
+> *Example: "1 PM to 3 PM" -> `[13, 14]` (hour 15 is excluded).*
 
 ---
 
-## 📐 Mathematical Formulation & Solvers
+## Mathematical Formulation & Solvers
 
-The campus energy dispatch is formulated as a continuous Linear Program (LP) over 120 decision variables $\{G_h, S^{\text{used}}_h, B^{\text{charge}}_h, B^{\text{discharge}}_h, E_h\}_{h=0}^{23}$:
+The 24-hour campus energy dispatch is formulated as a continuous Linear Program (LP) over 120 decision variables $\{G_h, S^{\text{used}}_h, B^{\text{charge}}_h, B^{\text{discharge}}_h, E_h\}_{h=0}^{23}$:
 
 ### 1. Objective Function (Cost Minimization)
-$$\min \sum_{h=0}^{23} \Big( G_h \cdot \text{Tariff}_h \Big)$$
+```
+Minimize:  Total_Cost = SUM_{h=0..23} ( Grid_h * Tariff_h )
+```
 
-### 2. Hourly Energy Balance Equation ($\forall h \in [0, 23]$)
-$$G_h + S^{\text{used}}_h + B^{\text{discharge}}_h = \text{Demand}_h + B^{\text{charge}}_h$$
+### 2. Hourly Energy Balance Equation (for each hour h = 0 .. 23)
+```
+Grid_h + Solar_Used_h + Battery_Discharge_h = Demand_h + Battery_Charge_h
+```
 
-### 3. Solar Generation Bounds
-$$0 \le S^{\text{used}}_h \le S_h^{\text{effective}} \quad \text{where } S_h^{\text{effective}} = S_h \cdot \text{factor}_h$$
+### 3. Solar Utilization Bound
+```
+0 <= Solar_Used_h <= Solar_Available_h * Factor_h
+```
 
 ### 4. Battery State-of-Charge (SOC) Dynamics
-$$E_h = E_{h-1} + B^{\text{charge}}_h - B^{\text{discharge}}_h \quad (E_{-1} = \text{initial\_energy\_kwh})$$
-$$\max(\text{base\_min}, \text{directive\_min}_h) \le E_h \le \text{capacity\_kwh}$$
-$$0 \le B^{\text{charge}}_h \le \text{max\_charge\_rate}, \quad 0 \le B^{\text{discharge}}_h \le \text{max\_discharge\_rate}$$
+```
+Energy_h = Energy_{h-1} + Battery_Charge_h - Battery_Discharge_h
+max(Base_Minimum_kWh, Directive_Minimum_kWh) <= Energy_h <= Capacity_kWh
+0 <= Battery_Charge_h <= Max_Charge_Rate_kW
+0 <= Battery_Discharge_h <= Max_Discharge_Rate_kW
+```
 
-### 5. End-of-Day Battery Neutrality
-$$E_{23} = \text{initial\_energy\_kwh} \quad (\pm 0.01\text{ kWh tolerance})$$
+### 5. End-of-Day Battery Neutrality Constraint
+```
+Energy_23 == Initial_Energy_kWh  (enforced within <= 0.01 kWh tolerance)
+```
 
 * **Solver Engine**: `scipy.optimize.linprog(..., method='highs')` (HiGHS Dual Simplex / Interior Point solver).
-* **Execution Time**: Complete 24-hour scenario solved in **$3 \text{ to } 8 \text{ ms}$** with mathematical global optimality.
+* **Execution Time**: Complete 24-hour scenario solved in **3 to 8 ms** with guaranteed mathematical global optimality.
 
 ---
 
-## 🧪 Quickstart & Local Reproduction
+## Quickstart & Local Reproduction
 
 ### Option A: 1-Command Unified Docker Orchestration
 Run the entire production stack (FastAPI Backend + React Frontend + Nginx Reverse Proxy) locally:
@@ -161,7 +172,7 @@ Open `http://localhost:5173` in your browser.
 
 ---
 
-## 📡 Live Judge Sample Verification
+## Live Judge Sample Verification
 
 Test the live production deployment from any terminal:
 
@@ -228,22 +239,22 @@ curl -s -X POST https://bup-preli-26.onrender.com/optimize-energy \
 
 ---
 
-## 📊 Evaluation Rubric Alignment (100 Base Points)
+## Evaluation Rubric Alignment (100 Base Points)
 
 | Evaluation Category | Marks | Project Implementation |
 | :--- | :---: | :--- |
-| **1. System Readiness & API Reachability** | **10** | Dual live deployment on Render & Vercel. Public HTTP access, zero authentication/VPN, CORS enabled, response latency < 0.3s. |
+| **1. System Readiness & API Reachability** | **10** | Dual live deployment on Render and Vercel. Public HTTP access, zero authentication/VPN, CORS enabled, response latency < 0.3s. |
 | **2. LLM Directive Interpretation** | **20** | Live Groq Llama-3.3-70B model parsing operator notes. Accurate whole-hour ranges, remaining solar factor scaling, and no-op distractor filtration. |
 | **3. Constraint Enforcement & Validity** | **20** | Rigorous verification of hourly energy balance, battery SOC bounds, C-rates, and 100% end-of-day battery neutrality. |
 | **4. Economic Optimization** | **20** | HiGHS Linear Programming engine guarantees the mathematical global minimum cost under time-of-use tariffs. |
 | **5. Code Quality & Architecture** | **10** | Modular architecture, Pydantic type validation, structured exception handling returning clean HTTP 400/500 JSON without stack leaks. |
 | **6. Documentation & Reproducibility** | **10** | Comprehensive self-contained README, Dockerfile orchestration, environment variables specification, and sample curl commands. |
-| **7. Operator Experience & Cleantech UI** | **10** | Enterprise Cleantech emerald theme, mobile touch-optimized, bilingual toggle (বাংলা ⇄ English), Speech-to-Text/TTS, Digital Energy Passport. |
+| **7. Operator Experience & Cleantech UI** | **10** | Enterprise Cleantech emerald theme, mobile touch-optimized, bilingual toggle (বাংলা / English), Speech-to-Text/TTS, Digital Energy Passport. |
 | **Total Base Evaluation Score** | **100** | **100% Compliant with Participant Guide & Official Rulebook** |
 
 ---
 
-## 🔒 Security & Environment Configuration
+## Security & Environment Configuration
 
 All secret keys are injected strictly at runtime via environment variables on hosting providers:
 
@@ -256,4 +267,4 @@ All secret keys are injected strictly at runtime via environment variables on ho
 | `PORT` | Optional | `8000` | Dynamic service binding port |
 | `HOST` | Optional | `0.0.0.0` | Network binding interface |
 
-> 🛡️ **Offline Deterministic Fallback**: In the absence of an external LLM API key or during network downtime, the system deterministically executes an internal regex rule-matching engine covering all 6 directive types, ensuring zero runtime crashes.
+> **Offline Deterministic Fallback**: In the absence of an external LLM API key or during network downtime, the system deterministically executes an internal regex rule-matching engine covering all 6 directive types, ensuring zero runtime crashes.
