@@ -1,11 +1,6 @@
 # GridWise — Autonomous Smart Campus Energy Optimization Platform
 **BUP CSE Fest 2026 Hackathon — Online Preliminary Round**
 
-[![API Readiness](https://img.shields.io/badge/API_Status-100%25_Readiness_HTTP_200-10b981.svg?style=for-the-badge&logo=fastapi)](https://bup-preli-26.onrender.com/health)
-[![Vercel Deployment](https://img.shields.io/badge/Vercel_Frontend-Live_Production-000000.svg?style=for-the-badge&logo=vercel)](https://bup-preli-26.vercel.app)
-[![Mathematical Solver](https://img.shields.io/badge/Solver-SciPy_HiGHS_LP-2563eb.svg?style=for-the-badge&logo=scipy)](https://scipy.org)
-[![LLM Engine](https://img.shields.io/badge/LLM_Engine-Groq_Llama--3.3--70B-f59e0b.svg?style=for-the-badge&logo=meta)](https://groq.com)
-
 ---
 
 ## Live Deployments
@@ -237,20 +232,6 @@ curl -s -X POST https://bup-preli-26.onrender.com/optimize-energy \
 }
 ```
 
----
-
-## Evaluation Rubric Alignment (100 Base Points)
-
-| Evaluation Category | Marks | Project Implementation |
-| :--- | :---: | :--- |
-| **1. System Readiness & API Reachability** | **10** | Dual live deployment on Render and Vercel. Public HTTP access, zero authentication/VPN, CORS enabled, response latency < 0.3s. |
-| **2. LLM Directive Interpretation** | **20** | Live Groq Llama-3.3-70B model parsing operator notes. Accurate whole-hour ranges, remaining solar factor scaling, and no-op distractor filtration. |
-| **3. Constraint Enforcement & Validity** | **20** | Rigorous verification of hourly energy balance, battery SOC bounds, C-rates, and 100% end-of-day battery neutrality. |
-| **4. Economic Optimization** | **20** | HiGHS Linear Programming engine guarantees the mathematical global minimum cost under time-of-use tariffs. |
-| **5. Code Quality & Architecture** | **10** | Modular architecture, Pydantic type validation, structured exception handling returning clean HTTP 400/500 JSON without stack leaks. |
-| **6. Documentation & Reproducibility** | **10** | Comprehensive self-contained README, Dockerfile orchestration, environment variables specification, and sample curl commands. |
-| **7. Operator Experience & Cleantech UI** | **10** | Enterprise Cleantech emerald theme, mobile touch-optimized, bilingual toggle (বাংলা / English), Speech-to-Text/TTS, Digital Energy Passport. |
-| **Total Base Evaluation Score** | **100** | **100% Compliant with Participant Guide & Official Rulebook** |
 
 ---
 
