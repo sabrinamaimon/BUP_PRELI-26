@@ -19,11 +19,11 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s"
 )
-logger = logging.getLogger("bup_gridwise_api")
+logger = logging.getLogger("gridwise_api")
 
 app = FastAPI(
     title="GridWise Smart Campus Energy Optimizer API",
-    description="LLM-Assisted Operator Directive Interpretation & 24-Hour Energy Scheduling for BUP CSE Fest 2026.",
+    description="LLM-Assisted Operator Directive Interpretation & 24-Hour Campus Energy Optimization Engine.",
     version="1.0.0"
 )
 

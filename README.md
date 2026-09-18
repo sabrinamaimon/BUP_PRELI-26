@@ -1,5 +1,7 @@
 # GridWise — Autonomous Smart Campus Energy Optimization Platform
 
+GridWise is an enterprise-grade smart campus energy scheduling and operator directive interpretation platform. It couples mathematical linear programming (HiGHS LP) with generative operator intent parsing to minimize campus electricity procurement costs, maximize rooftop solar utilization, and preserve battery energy storage life under dynamic Time-of-Use tariffs.
+
 ## Live Deployments
 
 The platform is deployed across dual high-availability cloud environments for zero-downtime evaluation:

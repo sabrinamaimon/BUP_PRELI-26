@@ -15,7 +15,7 @@ from .guardrails import (
 
 logger = logging.getLogger("energy_optimizer.llm")
 
-LLM_SYSTEM_PROMPT = """You are an expert AI energy systems engineer for the BUP Smart Campus Energy Grid.
+LLM_SYSTEM_PROMPT = """You are an expert AI energy systems engineer for the Smart Campus Energy Grid.
 Your task is to interpret short natural-language operator notes and convert them into machine-checkable structured directives.
 
 You must return a JSON array containing EXACTLY ONE interpretation object for each operator note, in note_index order (0, 1, ... N-1).
