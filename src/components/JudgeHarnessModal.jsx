@@ -80,6 +80,13 @@ export function JudgeHarnessModal({
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const cleanDisplayJson = React.useMemo(() => {
+    const raw = apiResponse || currentSchedule;
+    if (!raw) return null;
+    const { _ui_metadata, ...canonical } = raw;
+    return canonical;
+  }, [apiResponse, currentSchedule]);
+
   return (
     <div className="glass-panel" style={{ padding: '1.75rem', marginBottom: '2rem' }}>
       <div style={{ borderBottom: '1px solid var(--border-glass)', paddingBottom: '1.25rem', marginBottom: '1.5rem' }}>
@@ -210,7 +217,7 @@ export function JudgeHarnessModal({
           </span>
           <button 
             className="btn-secondary" 
-            onClick={() => copyJson(apiResponse || currentSchedule)}
+            onClick={() => copyJson(cleanDisplayJson)}
             style={{ fontSize: '0.75rem', padding: '0.35rem 0.75rem' }}
           >
             {copied ? <Check size={14} color="var(--primary-400)" /> : <Copy size={14} />}
@@ -229,7 +236,7 @@ export function JudgeHarnessModal({
           color: 'var(--primary-200)',
           border: '1px solid var(--border-glass)'
         }}>
-          {JSON.stringify(apiResponse || currentSchedule, null, 2)}
+          {JSON.stringify(cleanDisplayJson, null, 2)}
         </pre>
       </div>
     </div>
