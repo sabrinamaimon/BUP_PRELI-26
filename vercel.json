@@ -4,6 +4,14 @@
   "outputDirectory": "dist",
   "rewrites": [
     {
+      "source": "/health",
+      "destination": "/api/health"
+    },
+    {
+      "source": "/optimize-energy",
+      "destination": "/api/optimize-energy"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
