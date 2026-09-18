@@ -82,7 +82,7 @@ The system strictly supports all 6 canonical directive classes specified in the 
 
 ## Mathematical Formulation & Solvers
 
-The 24-hour campus energy dispatch is formulated as a continuous Linear Program (LP) over 120 decision variables $\{G_h, S^{\text{used}}_h, B^{\text{charge}}_h, B^{\text{discharge}}_h, E_h\}_{h=0}^{23}$:
+The 24-hour campus energy dispatch is formulated as a continuous Linear Program (LP) over 120 decision variables across all hours `h = 0 .. 23` (`Grid_h`, `Solar_Used_h`, `Battery_Charge_h`, `Battery_Discharge_h`, `Battery_Energy_h`):
 
 ### 1. Objective Function (Cost Minimization)
 ```
