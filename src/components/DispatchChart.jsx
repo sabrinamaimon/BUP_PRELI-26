@@ -116,7 +116,7 @@ export function DispatchChart({ scheduleData, rawScenario, baselineData, lang })
 
       {/* Mobile Scroll Indicator */}
       <div className="mobile-scroll-hint">
-        <span>👈 {lang === 'bn' ? '২৪ ঘণ্টার গ্রাফ স্ক্রল করে দেখুন (Swipe 24h)' : 'Swipe horizontally to view full 24 hours'} 👉</span>
+        <span>{lang === 'bn' ? '২৪ ঘণ্টার গ্রাফ স্ক্রল করে দেখুন (Swipe 24h)' : 'Swipe horizontally to view full 24 hours'}</span>
       </div>
 
       {/* 24-Hour Visual Bar Columns */}
