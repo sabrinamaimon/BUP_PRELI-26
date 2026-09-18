@@ -1,7 +1,4 @@
 # GridWise — Autonomous Smart Campus Energy Optimization Platform
-**BUP CSE Fest 2026 Hackathon — Online Preliminary Round**
-
----
 
 ## Live Deployments
 
