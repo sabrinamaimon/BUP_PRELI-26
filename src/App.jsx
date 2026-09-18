@@ -27,7 +27,7 @@ export default function App() {
   const [lang, setLang] = useState('en');
   const [theme, setTheme] = useState('light');
   const [activeTab, setActiveTab] = useState('overview');
-  const [backendUrl, setBackendUrl] = useState('http://localhost:8000');
+  const [backendUrl, setBackendUrl] = useState(import.meta.env.VITE_BACKEND_URL || 'https://bup-preli-26.onrender.com');
   const [backendConnected, setBackendConnected] = useState(false);
   const [isOptimizing, setIsOptimizing] = useState(false);
 
