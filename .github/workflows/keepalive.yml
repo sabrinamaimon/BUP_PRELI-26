@@ -1,0 +1,15 @@
+name: Render Keepalive Ping
+
+on:
+  schedule:
+    # Run every 10 minutes to prevent Render free tier sleep
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Render Backend
+        run: |
+          curl -s -i https://bup-preli-26.onrender.com/health
