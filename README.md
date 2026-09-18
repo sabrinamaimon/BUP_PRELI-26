@@ -1,9 +1,15 @@
 # GridWise — Smart Campus Energy Optimization Platform
 **BUP CSE Fest 2026 Hackathon — Online Preliminary Round**
 
-GridWise is an enterprise-grade cleantech energy optimization platform for the Bangladesh University of Professionals (BUP) smart campus. It integrates rooftop solar photovoltaics (PV), battery energy storage systems (BESS), dynamic grid tariffs, an automated Linear Programming optimization engine, and a natural-language operator directive interpretation pipeline.
+### 🚀 Live Production Deployments
+- **Judging API Base URL (Render)**: [https://bup-preli-26.onrender.com](https://bup-preli-26.onrender.com)
+  - Readiness Health Endpoint: `GET https://bup-preli-26.onrender.com/health`
+  - Optimization Endpoint: `POST https://bup-preli-26.onrender.com/optimize-energy`
+- **Interactive Cleantech Dashboard (Vercel)**: [https://bup-preli-26.vercel.app](https://bup-preli-26.vercel.app)
+- **Source Repository**: [https://github.com/sabrinamaimon/BUP_PRELI-26](https://github.com/sabrinamaimon/BUP_PRELI-26)
 
 ---
+
 
 ## Architecture & System Overview
 
