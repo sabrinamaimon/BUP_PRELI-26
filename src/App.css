@@ -1,35 +1,34 @@
 /* =========================================================================
-   GridWise Enterprise Cleantech & Sapphire Electric Grid Design System
-   Tesla Energy & Siemens Smart Grid Professional Palette
+   GridWise Signature Emerald Cleantech Design System
+   Full-Width Expansive Layout, High Contrast, Zero Glare Streaks
    ========================================================================= */
 
 :root {
-  /* Sapphire Electric Brand Primary */
-  --primary-50: #eff6ff;
-  --primary-100: #dbeafe;
-  --primary-200: #bfdbfe;
-  --primary-300: #93c5fd;
-  --primary-400: #60a5fa;
-  --primary-500: #3b82f6;
-  --primary-600: #2563eb;
-  --primary-700: #1d4ed8;
-  --primary-800: #1e40af;
-  --primary-900: #1e3a8a;
-  --primary-950: #172554;
+  /* Emerald Cleantech Brand Primary */
+  --primary-50: #ecfdf5;
+  --primary-100: #d1fae5;
+  --primary-200: #a7f3d0;
+  --primary-300: #6ee7b7;
+  --primary-400: #34d399;
+  --primary-500: #10b981;
+  --primary-600: #059669;
+  --primary-700: #047857;
+  --primary-800: #065f46;
+  --primary-900: #064e3b;
+  --primary-950: #022c22;
 
-  /* Cleantech Renewable Accents */
-  --accent-emerald: #059669;
-  --accent-emerald-bright: #10b981;
   --accent-amber: #d97706;
-  --accent-amber-bright: #f59e0b;
-  --accent-cyan: #0284c7;
-  --accent-cyan-bright: #0ea5e9;
+  --accent-amber-light: #fbbf24;
+  --accent-cyan: #0891b2;
+  --accent-cyan-light: #38bdf8;
   --accent-rose: #e11d48;
-  --accent-rose-bright: #f43f5e;
+  --accent-rose-light: #fb7185;
+  --accent-blue: #2563eb;
+  --accent-blue-light: #60a5fa;
 
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 20px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
   --radius-full: 9999px;
 
   --font-display: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
@@ -37,48 +36,50 @@
   --font-mono: 'JetBrains Mono', monospace;
 
   /* =========================================================================
-     LIGHT THEME (Default) - Crisp Enterprise Sapphire & Slate
+     LIGHT THEME (Default) - Crisp Emerald Cleantech & White
      ========================================================================= */
-  --bg-deep: #f8fafc;
+  --bg-deep: #f4f8f6;
   --bg-surface: #ffffff;
-  --bg-surface-elevated: #f1f5f9;
-  --bg-card: #ffffff;
-  --bg-glass: rgba(37, 99, 235, 0.04);
-  --border-glass: #e2e8f0;
-  --border-glass-bright: #3b82f6;
+  --bg-surface-elevated: #f8fafc;
+  --bg-card: rgba(255, 255, 255, 0.95);
+  --bg-glass: rgba(16, 185, 129, 0.05);
+  --border-glass: rgba(16, 185, 129, 0.22);
+  --border-glass-bright: rgba(5, 150, 105, 0.45);
 
-  --text-main: #0f172a;
-  --text-muted: #64748b;
-  --text-brand: #2563eb;
+  --text-main: #091e17;
+  --text-muted: #52635a;
+  --text-brand: #059669;
 
-  --shadow-card: 0 4px 16px rgba(15, 23, 42, 0.05);
-  --shadow-glow: 0 0 25px rgba(37, 99, 235, 0.12);
-  --header-bg: rgba(255, 255, 255, 0.95);
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.05);
+  --shadow-glow: 0 0 25px rgba(16, 185, 129, 0.15);
+  --shadow-glow-strong: 0 0 40px rgba(16, 185, 129, 0.25);
+  --header-bg: rgba(255, 255, 255, 0.94);
   --table-header-bg: #f8fafc;
   --table-border: #e2e8f0;
 }
 
 /* =========================================================================
-   DARK THEME (via .theme-dark) - Deep Navy / Obsidian Electric Grid
+   DARK THEME (via .theme-dark) - Deep Forest Obsidian Cleantech
    ========================================================================= */
 body.theme-dark {
-  --bg-deep: #070c18;
-  --bg-surface: #0c1427;
-  --bg-surface-elevated: #111c38;
-  --bg-card: #0c152a;
-  --bg-glass: rgba(59, 130, 246, 0.05);
-  --border-glass: #1e293b;
-  --border-glass-bright: #3b82f6;
+  --bg-deep: #020b08;
+  --bg-surface: #061812;
+  --bg-surface-elevated: #0a241b;
+  --bg-card: rgba(8, 26, 19, 0.82);
+  --bg-glass: rgba(16, 185, 129, 0.05);
+  --border-glass: rgba(52, 211, 153, 0.2);
+  --border-glass-bright: rgba(52, 211, 153, 0.55);
 
-  --text-main: #f8fafc;
+  --text-main: #f0fdf4;
   --text-muted: #94a3b8;
-  --text-brand: #60a5fa;
+  --text-brand: #34d399;
 
-  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.45);
-  --shadow-glow: 0 0 30px rgba(37, 99, 235, 0.25);
-  --header-bg: rgba(7, 12, 24, 0.95);
-  --table-header-bg: #0c152a;
-  --table-border: #1e293b;
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 30px rgba(16, 185, 129, 0.25);
+  --shadow-glow-strong: 0 0 50px rgba(16, 185, 129, 0.4);
+  --header-bg: rgba(3, 12, 9, 0.94);
+  --table-header-bg: rgba(10, 36, 27, 0.95);
+  --table-border: rgba(255, 255, 255, 0.06);
 }
 
 * {
@@ -95,9 +96,9 @@ body {
   min-height: 100vh;
   line-height: 1.5;
   background-image: 
-    radial-gradient(circle at 10% 10%, rgba(37, 99, 235, 0.08) 0%, transparent 45%),
-    radial-gradient(circle at 90% 90%, rgba(5, 150, 105, 0.06) 0%, transparent 50%),
-    radial-gradient(circle at 50% 50%, rgba(37, 99, 235, 0.03) 0%, transparent 65%);
+    radial-gradient(circle at 10% 10%, rgba(16, 185, 129, 0.1) 0%, transparent 45%),
+    radial-gradient(circle at 90% 90%, rgba(6, 182, 212, 0.07) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(5, 150, 105, 0.03) 0%, transparent 65%);
   background-attachment: fixed;
   overflow-x: hidden;
   transition: background-color 0.25s ease, color 0.25s ease;
@@ -131,13 +132,13 @@ body.lang-bn {
 /* Clean Professional Glass Panels (NO running white streaks) */
 .glass-panel {
   background: var(--bg-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1.5px solid var(--border-glass);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-card);
   position: relative;
-  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .glass-panel:hover {
@@ -152,9 +153,9 @@ body.lang-bn {
   top: 0;
   z-index: 1000;
   background: var(--header-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border-glass);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1.5px solid var(--border-glass);
   width: 100%;
   transition: background 0.25s ease;
 }
@@ -180,12 +181,12 @@ body.lang-bn {
 .brand-logo-icon {
   width: 42px;
   height: 42px;
-  background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
   color: #fff;
 }
 
@@ -199,7 +200,7 @@ body.lang-bn {
 }
 
 body.theme-dark .brand-title {
-  background: linear-gradient(to right, #ffffff, var(--primary-400));
+  background: linear-gradient(to right, #ffffff, var(--primary-300));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -208,14 +209,10 @@ body.theme-dark .brand-title {
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  background: rgba(37, 99, 235, 0.08);
+  background: rgba(16, 185, 129, 0.08);
   padding: 0.3rem;
   border-radius: var(--radius-full);
   border: 1px solid var(--border-glass);
-}
-
-body.theme-dark .nav-tabs-group {
-  background: rgba(255, 255, 255, 0.04);
 }
 
 .nav-tab-btn {
@@ -236,7 +233,7 @@ body.theme-dark .nav-tabs-group {
 
 .nav-tab-btn:hover {
   color: var(--text-main);
-  background: rgba(37, 99, 235, 0.08);
+  background: rgba(16, 185, 129, 0.08);
 }
 
 body.theme-dark .nav-tab-btn:hover {
@@ -246,7 +243,7 @@ body.theme-dark .nav-tab-btn:hover {
 .nav-tab-btn.active {
   background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
   color: #ffffff !important;
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
 }
 
 .nav-actions-group {
@@ -260,8 +257,8 @@ body.theme-dark .nav-tab-btn:hover {
   align-items: center;
   gap: 0.55rem;
   padding: 0.4rem 1rem;
-  background: rgba(37, 99, 235, 0.08);
-  border: 1px solid rgba(37, 99, 235, 0.25);
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
   border-radius: var(--radius-full);
   font-size: 0.825rem;
   font-weight: 700;
@@ -270,7 +267,6 @@ body.theme-dark .nav-tab-btn:hover {
 
 body.theme-dark .status-pill {
   color: var(--primary-300);
-  background: rgba(37, 99, 235, 0.15);
 }
 
 .pulse-dot {
@@ -290,7 +286,7 @@ body.theme-dark .status-pill {
 
 .icon-toggle-btn {
   background: var(--bg-surface);
-  border: 1px solid var(--border-glass);
+  border: 1.5px solid var(--border-glass);
   color: var(--text-main);
   font-family: inherit;
   font-weight: 800;
@@ -306,7 +302,7 @@ body.theme-dark .status-pill {
 }
 
 .icon-toggle-btn:hover {
-  background: rgba(37, 99, 235, 0.08);
+  background: rgba(16, 185, 129, 0.12);
   border-color: var(--primary-500);
   transform: translateY(-1px);
 }
@@ -337,8 +333,8 @@ body.theme-dark .status-pill {
   width: 40px;
   height: 40px;
   border-radius: var(--radius-sm);
-  background: rgba(37, 99, 235, 0.12);
-  border: 1.5px solid rgba(37, 99, 235, 0.3);
+  background: rgba(16, 185, 129, 0.15);
+  border: 1.5px solid rgba(16, 185, 129, 0.35);
   color: var(--primary-700);
   display: flex;
   align-items: center;
@@ -374,8 +370,8 @@ body.theme-dark .hamburger-btn {
   align-items: center;
   justify-content: space-between;
   padding: 0.45rem 0.95rem;
-  background: rgba(37, 99, 235, 0.08);
-  border: 1px solid rgba(37, 99, 235, 0.25);
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
   border-radius: var(--radius-full);
   font-size: 0.775rem;
   font-weight: 700;
@@ -404,7 +400,7 @@ body.theme-dark .mobile-status-pill {
   max-width: 85vw;
   height: 100%;
   background: var(--bg-surface);
-  border-right: 1px solid var(--border-glass-bright);
+  border-right: 1.5px solid var(--border-glass-bright);
   padding: 1.75rem 1.5rem;
   display: flex;
   flex-direction: column;
@@ -510,7 +506,7 @@ body.theme-dark .mobile-status-pill {
   }
   .metric-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08), var(--shadow-glow);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08), var(--shadow-glow);
     border-color: var(--border-glass-bright);
   }
 }
@@ -538,7 +534,7 @@ body.theme-dark .mobile-status-pill {
   width: 38px;
   height: 38px;
   border-radius: var(--radius-sm);
-  background: rgba(37, 99, 235, 0.12);
+  background: rgba(16, 185, 129, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -609,15 +605,15 @@ body.theme-dark .metric-subtext {
 }
 
 .scenario-pill.active {
-  background: rgba(37, 99, 235, 0.12);
+  background: rgba(16, 185, 129, 0.15);
   border-color: var(--primary-600);
   color: var(--primary-700);
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
 }
 
 body.theme-dark .scenario-pill.active {
   color: #fff;
-  background: rgba(37, 99, 235, 0.25);
+  background: rgba(16, 185, 129, 0.25);
   border-color: var(--primary-400);
 }
 
@@ -634,12 +630,12 @@ body.theme-dark .scenario-pill.active {
   font-size: 0.875rem;
   font-weight: 800;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.3);
   transition: all 0.2s ease;
 }
 
 .btn-primary:hover {
-  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
+  box-shadow: 0 6px 18px rgba(5, 150, 105, 0.45);
   transform: translateY(-1px);
 }
 
@@ -665,7 +661,7 @@ body.theme-dark .scenario-pill.active {
 }
 
 .btn-secondary:hover {
-  background: rgba(37, 99, 235, 0.06);
+  background: rgba(16, 185, 129, 0.08);
   border-color: var(--primary-500);
 }
 
@@ -703,10 +699,10 @@ body.theme-dark .scenario-pill.active {
   transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.bar-grid { background: var(--primary-600); }
-.bar-solar { background: var(--accent-emerald); }
-.bar-charge { background: var(--accent-amber); }
-.bar-discharge { background: var(--accent-rose); }
+.bar-grid { background: #3b82f6; }
+.bar-solar { background: #10b981; }
+.bar-charge { background: #f59e0b; }
+.bar-discharge { background: #ec4899; }
 
 .hour-axis-label {
   text-align: center;
@@ -774,7 +770,7 @@ body.theme-dark .scenario-pill.active {
 }
 
 .schedule-table tr:hover td {
-  background: rgba(37, 99, 235, 0.04);
+  background: rgba(16, 185, 129, 0.04);
 }
 
 .badge-action {
@@ -787,15 +783,15 @@ body.theme-dark .scenario-pill.active {
 }
 
 .badge-charge {
-  background: rgba(217, 119, 6, 0.12);
-  color: var(--accent-amber);
-  border: 1px solid rgba(217, 119, 6, 0.3);
+  background: rgba(245, 158, 11, 0.15);
+  color: #d97706;
+  border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .badge-discharge {
-  background: rgba(225, 29, 72, 0.12);
-  color: var(--accent-rose);
-  border: 1px solid rgba(225, 29, 72, 0.3);
+  background: rgba(236, 72, 153, 0.15);
+  color: #db2777;
+  border: 1px solid rgba(236, 72, 153, 0.3);
 }
 
 .badge-idle {
@@ -832,7 +828,7 @@ body.theme-dark .scenario-pill.active {
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
 }
 
 .voice-mic-btn.listening {
@@ -857,7 +853,7 @@ body.theme-dark .scenario-pill.active {
 }
 
 .directive-card.active-directive {
-  border-left: 4px solid var(--primary-600);
+  border-left: 4px solid var(--primary-500);
 }
 
 .directive-card.noop-directive {
@@ -869,7 +865,7 @@ body.theme-dark .scenario-pill.active {
    7. Emergency Strip & Footer (Full Width)
    ========================================================================= */
 .emergency-strip {
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(5, 150, 105, 0.08));
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(6, 182, 212, 0.1));
   border: 1.5px solid var(--border-glass-bright);
   border-radius: var(--radius-md);
   padding: 1.35rem 2rem;
@@ -880,12 +876,12 @@ body.theme-dark .scenario-pill.active {
   gap: 1.25rem;
   margin-top: 3.5rem;
   margin-bottom: 2.5rem;
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.1);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.1);
   width: 100%;
 }
 
 body.theme-dark .emergency-strip {
-  background: linear-gradient(135deg, rgba(30, 58, 138, 0.5), rgba(6, 78, 59, 0.4));
+  background: linear-gradient(135deg, rgba(6, 78, 59, 0.7), rgba(4, 44, 34, 0.9));
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
@@ -902,14 +898,14 @@ body.theme-dark .emergency-strip {
   font-weight: 800;
   text-decoration: none;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
   transition: all 0.2s ease;
 }
 
 .call-operator-btn:hover {
   transform: translateY(-2px);
   background: var(--primary-700);
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+  box-shadow: 0 6px 20px rgba(5, 150, 105, 0.5);
 }
 
 .footer-section {

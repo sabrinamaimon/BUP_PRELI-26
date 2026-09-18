@@ -28,16 +28,16 @@ export function MetricCards({ scheduleData, rawScenario, lang }) {
       value: `${formatNumber(Math.round(totalDemand), lang)} kWh`,
       subtext: `${formatNumber(24, lang)} ${lang === 'bn' ? 'ঘণ্টা পরিকল্পনা' : 'Hours Planning Horizon'}`,
       icon: Zap,
-      color: '#0284c7', // Cyan Blue
-      bgWrap: 'rgba(2, 132, 199, 0.12)'
+      color: '#0891b2', // Cyan
+      bgWrap: 'rgba(8, 145, 178, 0.12)'
     },
     {
       label: t.metricTotalGrid,
       value: `${formatNumber(Math.round(scheduleData.total_grid_kwh), lang)} kWh`,
       subtext: `${lang === 'bn' ? 'গ্রিড ক্রয় অনুপাত' : 'Grid Supply Ratio'}: ${formatNumber(100 - solarShare, lang)}%`,
       icon: TrendingUp,
-      color: '#2563eb', // Sapphire Blue
-      bgWrap: 'rgba(37, 99, 235, 0.12)'
+      color: '#3b82f6', // Grid Blue
+      bgWrap: 'rgba(59, 130, 246, 0.12)'
     },
     {
       label: t.metricSolarUsed,
@@ -45,7 +45,7 @@ export function MetricCards({ scheduleData, rawScenario, lang }) {
       subtext: `${lang === 'bn' ? 'সৌরশক্তি অবদান' : 'Solar Coverage'}: ${formatNumber(solarShare, lang)}%`,
       icon: Sun,
       color: '#059669', // Cleantech Emerald
-      bgWrap: 'rgba(5, 150, 105, 0.12)'
+      bgWrap: 'rgba(5, 150, 105, 0.14)'
     },
     {
       label: t.metricTotalCost,
@@ -53,15 +53,15 @@ export function MetricCards({ scheduleData, rawScenario, lang }) {
       subtext: `${lang === 'bn' ? 'সর্বনিম্ন অপ্টিমাইজড খরচ' : 'Cost Minimized'}`,
       icon: Coins,
       color: '#d97706', // Amber Gold
-      bgWrap: 'rgba(217, 119, 6, 0.12)'
+      bgWrap: 'rgba(217, 119, 6, 0.14)'
     },
     {
       label: t.metricPeakLoad,
       value: `${formatNumber(Math.round(scheduleData.peak_grid_kwh), lang)} kW`,
       subtext: `${lang === 'bn' ? 'পিক লোড শেভিং সম্পন্ন' : 'Peak Shaved via BESS'}`,
       icon: BatteryCharging,
-      color: '#7c3aed', // Royal Violet
-      bgWrap: 'rgba(124, 58, 237, 0.12)'
+      color: '#ec4899', // Pink Magenta
+      bgWrap: 'rgba(236, 72, 153, 0.12)'
     },
     {
       label: t.metricBatteryNeutrality,
@@ -69,7 +69,7 @@ export function MetricCards({ scheduleData, rawScenario, lang }) {
       subtext: `${formatNumber(initialBat, lang)} kWh → ${formatNumber(finalBat, lang)} kWh`,
       icon: CheckCircle2,
       color: isNeutral ? '#059669' : '#e11d48',
-      bgWrap: isNeutral ? 'rgba(5, 150, 105, 0.12)' : 'rgba(225, 29, 72, 0.12)'
+      bgWrap: isNeutral ? 'rgba(5, 150, 105, 0.14)' : 'rgba(225, 29, 72, 0.14)'
     }
   ];
 
