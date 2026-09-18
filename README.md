@@ -137,3 +137,43 @@ Open `http://localhost:5173` in your browser.
 - **Solver**: `scipy.optimize.linprog(..., method='highs')` (HiGHS dual simplex / interior point engine).
 - **Runtime Performance**: Solves a complete 24-hour scenario with directives in **$3 \text{ to } 8 \text{ ms}$**.
 - **Neutrality**: Guarantees end-of-day battery neutrality ($E_{23} = E_{\text{initial}}$) and hourly energy balance within $\le 0.01\text{ kWh}$.
+
+---
+
+## 4. Environment Variables & Model Providers
+
+| Variable | Required | Default | Description |
+| :--- | :---: | :--- | :--- |
+| `GROQ_API_KEY` | Optional | `""` | Primary fast LLM provider key (Groq Cloud) |
+| `GROQ_MODEL` | Optional | `llama-3.3-70b-versatile` | Ultra-fast Llama-3 model on Groq (<1s p95 latency) |
+| `GEMINI_API_KEY` | Optional | `""` | Secondary fallback LLM key (Google AI Studio) |
+| `GEMINI_MODEL` | Optional | `gemini-2.5-flash` | Google Gemini model fallback |
+| `PORT` | Optional | `8000` (Render: dynamic) | Service listening port |
+| `HOST` | Optional | `0.0.0.0` | Binding network interface |
+
+> 🛡️ **Offline Deterministic Fallback**: If neither Groq nor Gemini API key is provided, the service deterministically falls back to an internal regex rule-matching engine for all 6 canonical directive types, ensuring zero runtime crashes.
+
+---
+
+## 5. Public Sample Verification Test
+
+### Health Check:
+```bash
+curl -i https://bup-preli-26.onrender.com/health
+# Returns HTTP 200 OK: {"status": "ok"}
+```
+
+### Full 24-Hour Optimization Test:
+```bash
+curl -s -X POST https://bup-preli-26.onrender.com/optimize-energy \
+  -H "Content-Type: application/json" \
+  -d @backend/tests/sample_request.json
+```
+
+---
+
+## 6. Secret Handling & Reproducibility Guidelines
+
+- **Zero Baked-in Credentials**: No secret API keys, tokens, or credentials are committed to this repository. All credentials are injected strictly at runtime via environment variables on hosting providers.
+- **Error Boundaries**: Malformed inputs or LLM provider errors return controlled HTTP 400 or HTTP 500 JSON without leaking system stack traces or sensitive environment variables.
+
