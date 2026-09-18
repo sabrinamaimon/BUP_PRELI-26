@@ -90,9 +90,9 @@ export default function App() {
     setTimeout(() => {
       setIsOptimizing(false);
       confetti({
-        particleCount: 50,
-        spread: 60,
-        origin: { y: 0.7 }
+        particleCount: 60,
+        spread: 70,
+        origin: { y: 0.6 }
       });
     }, 400);
   };
@@ -100,7 +100,7 @@ export default function App() {
   const t = translations[lang];
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div className="app-container">
       {/* Top Navigation & Mobile 2-Row Header */}
       <Navbar
         activeTab={activeTab}
@@ -113,11 +113,11 @@ export default function App() {
         scenarioId={activeScenario.scenario_id}
       />
 
-      <main style={{ flex: 1, maxWidth: '1440px', margin: '0 auto', width: '100%', padding: '1.5rem 1.5rem 0 1.5rem' }}>
-        {/* Scenario Selector & Quick Action Bar */}
+      <main className="main-content">
+        {/* Scenario Selector & Quick Action Bar (Full Width) */}
         <div className="glass-panel scenario-bar">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-            <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
+            <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
               {t.scenarioLabel}:
             </span>
             <div className="scenario-pills-wrap">
@@ -128,7 +128,7 @@ export default function App() {
                   onClick={() => setSelectedScenarioIndex(idx)}
                 >
                   <span>{sc.id}</span>
-                  <span style={{ opacity: 0.75, marginLeft: '0.35rem', fontSize: '0.75rem' }}>
+                  <span style={{ opacity: 0.8, marginLeft: '0.4rem', fontSize: '0.775rem' }}>
                     ({formatNumber(sc.operator_notes.length, lang)} {lang === 'bn' ? 'নোট' : 'notes'})
                   </span>
                 </button>
@@ -142,13 +142,13 @@ export default function App() {
               onClick={handleReoptimize}
               disabled={isOptimizing}
             >
-              <RotateCw size={16} className={isOptimizing ? 'pulse-dot' : ''} />
+              <RotateCw size={18} className={isOptimizing ? 'pulse-dot' : ''} />
               <span>{isOptimizing ? t.optimizing : t.runOptimization}</span>
             </button>
           </div>
         </div>
 
-        {/* High-Impact Statistics Showcase Bar */}
+        {/* High-Impact Full-Width Statistics Showcase Bar */}
         <MetricCards
           scheduleData={scheduleData}
           rawScenario={activeScenario}
@@ -158,7 +158,7 @@ export default function App() {
         {/* Tab View Routing */}
         {activeTab === 'overview' && (
           <>
-            {/* Live 24-Hour Power Flow Simulator & Savings Header */}
+            {/* Live 24-Hour Power Flow Simulator with Circular Gauge & Savings */}
             <PowerFlowVisualizer
               scheduleData={scheduleData}
               rawScenario={activeScenario}
