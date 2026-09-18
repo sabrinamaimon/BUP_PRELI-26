@@ -15,7 +15,9 @@ export function ScheduleTable({ scheduleData, rawScenario, lang }) {
     const rows = hours.map((h, idx) => {
       const raw = rawHours[idx];
       const cost = Math.round(h.grid_kwh * raw.tariff_bdt_per_kwh * 100) / 100;
-      const rationale = (lang === 'bn' ? h.decision_rationale_bn : h.decision_rationale_en).replace(/,/g, ';');
+      const textBn = h.decision_rationale_bn || scheduleData._ui_metadata?.[h.hour]?.rationale_bn || 'স্বাভাবিক বিদ্যুৎ বণ্টন';
+      const textEn = h.decision_rationale_en || scheduleData._ui_metadata?.[h.hour]?.rationale_en || 'Balanced energy dispatch';
+      const rationale = (lang === 'bn' ? textBn : textEn).replace(/,/g, ';');
       return `${h.hour},${raw.demand_kwh},${raw.solar_kwh},${h.solar_used_kwh},${raw.tariff_bdt_per_kwh},${h.battery_action},${h.battery_kwh},${h.battery_energy_after_kwh},${h.grid_kwh},${cost},"${rationale}"`;
     }).join('\n');
 
@@ -107,7 +109,11 @@ export function ScheduleTable({ scheduleData, rawScenario, lang }) {
                   <td style={{ maxWidth: '320px', fontSize: '0.8rem', color: 'var(--text-muted)', fontFamily: 'inherit' }}>
                     <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.4rem' }}>
                       <Lightbulb size={14} color="var(--accent-amber)" style={{ flexShrink: 0, marginTop: '3px' }} />
-                      <span>{lang === 'bn' ? entry.decision_rationale_bn : entry.decision_rationale_en}</span>
+                      <span>
+                        {lang === 'bn' 
+                          ? (entry.decision_rationale_bn || scheduleData._ui_metadata?.[entry.hour]?.rationale_bn || 'স্বাভাবিক বিদ্যুৎ সরবরাহ')
+                          : (entry.decision_rationale_en || scheduleData._ui_metadata?.[entry.hour]?.rationale_en || 'Normal balanced dispatch')}
+                      </span>
                     </div>
                   </td>
                 </tr>

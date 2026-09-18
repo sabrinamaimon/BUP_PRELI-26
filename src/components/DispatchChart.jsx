@@ -248,7 +248,9 @@ export function DispatchChart({ scheduleData, rawScenario, baselineData, lang })
                 {lang === 'bn' ? 'অপ্টিমাইজার যুক্তি:' : 'Optimizer Decision Intelligence:'}
               </strong>
               <span style={{ color: 'var(--primary-800)', fontWeight: 600 }}>
-                {lang === 'bn' ? activeHourData.decision_rationale_bn : activeHourData.decision_rationale_en}
+                {lang === 'bn' 
+                  ? (activeHourData.decision_rationale_bn || scheduleData._ui_metadata?.[activeHourData.hour]?.rationale_bn || 'স্বাভাবিক বিদ্যুৎ বণ্টন')
+                  : (activeHourData.decision_rationale_en || scheduleData._ui_metadata?.[activeHourData.hour]?.rationale_en || 'Balanced energy dispatch')}
               </span>
             </div>
           </div>

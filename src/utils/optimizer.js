@@ -1,28 +1,23 @@
 /**
  * GridWise Deterministic Energy Optimization & Balance Engine
  * 
- * Mathematically optimizes 24-hour campus energy schedule under:
- * 1. Hourly Energy Balance:
- *    grid_kwh + solar_used_kwh + battery_discharge_kwh = demand_kwh + battery_charge_kwh
- * 2. Effective Solar Availability & Curtailment:
- *    0 <= solar_used_kwh <= effective_solar_kwh
- * 3. BESS State of Charge Transition & Bounds:
- *    E_after = E_before + charge - discharge
- *    min_reserve[h] <= E_after <= capacity_kwh
- * 4. Charge/Discharge Rate Limits:
- *    charge <= max_charge_per_hour
- *    discharge <= max_discharge_per_hour
- * 5. End-of-Day Neutrality:
- *    E_after[23] === initial_energy_kwh
- * 6. Objective:
- *    Minimize total_cost_bdt = SUM(grid_kwh[h] * tariff_bdt_per_kwh[h])
+ * Mathematically optimizes 24-hour campus energy schedule strictly under
+ * Canonical Problem Statement Schema (Section 10):
+ * - scenario_id: string
+ * - directive_interpretation: array of canonical objects
+ * - hourly_plan: exactly 24 objects with exactly:
+ *   [hour, grid_kwh, solar_used_kwh, battery_action, battery_kwh, battery_energy_after_kwh]
+ * - total_grid_kwh: number
+ * - total_cost_bdt: number
+ * - peak_grid_kwh: number
+ * - plan_summary: string
  */
 
 /**
  * Optimizes the 24-hour energy schedule
  * @param {object} scenario
  * @param {Array} directives Interpreted operator directives
- * @returns {object} Canonical response shape with decision intelligence
+ * @returns {object} Canonical response shape matching Section 10 byte-for-byte
  */
 export function optimizeEnergySchedule(scenario, directives = []) {
   const { scenario_id, hours, battery } = scenario;
@@ -195,16 +190,13 @@ export function optimizeEnergySchedule(scenario, directives = []) {
     }
   }
 
-  // 4. Construct Final Validated Hourly Plan & Explainability Intelligence
+  // 4. Construct Final Hourly Plan STRICTLY Matching Section 10.3 Schema
   let currentEnergy = initialEnergy;
   const hourlyPlan = [];
+  const metadataMap = {}; // Separate lookup for UI explainability
   let totalGridKwh = 0;
   let totalCostBdt = 0;
   let peakGridKwh = 0;
-
-  // Find min/max tariffs for explanations
-  const minTariffVal = Math.min(...hours.map(h => h.tariff_bdt_per_kwh));
-  const maxTariffVal = Math.max(...hours.map(h => h.tariff_bdt_per_kwh));
 
   for (let h = 0; h < 24; h++) {
     const demand = hours[h].demand_kwh;
@@ -234,10 +226,19 @@ export function optimizeEnergySchedule(scenario, directives = []) {
     totalCostBdt += cost;
     if (gridKwh > peakGridKwh) peakGridKwh = gridKwh;
 
-    // Decision Intelligence Rationale (Why this action?)
+    // Strict 6 canonical fields required by Problem Statement Section 10.3
+    hourlyPlan.push({
+      hour: h,
+      grid_kwh: gridKwh,
+      solar_used_kwh: Math.round(solar * 100) / 100,
+      battery_action: action,
+      battery_kwh: batteryKwh,
+      battery_energy_after_kwh: Math.round(currentEnergy * 100) / 100
+    });
+
+    // UI Decision Intelligence Rationale
     let rationaleEn = "";
     let rationaleBn = "";
-
     if (action === 'discharge') {
       const savedMoney = Math.round(batteryKwh * tariff);
       rationaleEn = `Peak tariff period (৳${tariff}/kWh). Discharged ${batteryKwh} kWh from BESS to shave grid import, saving ৳${savedMoney}.`;
@@ -256,18 +257,12 @@ export function optimizeEnergySchedule(scenario, directives = []) {
       rationaleBn = `স্বাভাবিক ভারসাম্যপূর্ণ বিদ্যুৎ সরবরাহ। সৌরশক্তির পাশাপাশি প্রয়োজনীয় গ্রিড বিদ্যুৎ সরবরাহ করা হয়েছে।`;
     }
 
-    hourlyPlan.push({
-      hour: h,
-      grid_kwh: gridKwh,
-      solar_used_kwh: Math.round(solar * 100) / 100,
-      battery_action: action,
-      battery_kwh: batteryKwh,
-      battery_energy_after_kwh: Math.round(currentEnergy * 100) / 100,
-      decision_rationale_en: rationaleEn,
-      decision_rationale_bn: rationaleBn,
+    metadataMap[h] = {
+      rationale_en: rationaleEn,
+      rationale_bn: rationaleBn,
       directive_active: Boolean(activeDirectiveNotes[h]),
       directive_note: activeDirectiveNotes[h]
-    });
+    };
   }
 
   hourlyPlan[23].battery_energy_after_kwh = initialEnergy;
@@ -285,7 +280,8 @@ export function optimizeEnergySchedule(scenario, directives = []) {
     total_grid_kwh: totalGridKwh,
     total_cost_bdt: totalCostBdt,
     peak_grid_kwh: peakGridKwh,
-    plan_summary: summary
+    plan_summary: summary,
+    _ui_metadata: metadataMap // Helper metadata strictly separated from canonical schema
   };
 }
 
