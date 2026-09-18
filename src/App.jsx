@@ -20,12 +20,12 @@ import { Footer } from './components/Footer';
 
 import { sampleScenarios } from './data/sampleScenarios';
 import { parseOperatorNote } from './utils/directiveParser';
-import { optimizeEnergySchedule } from './utils/optimizer';
+import { optimizeEnergySchedule, getBaselineSchedule } from './utils/optimizer';
 import { translations, formatNumber } from './utils/localization';
 
 export default function App() {
   const [lang, setLang] = useState('en');
-  const [theme, setTheme] = useState('light'); // Default to modern Light Theme
+  const [theme, setTheme] = useState('light');
   const [activeTab, setActiveTab] = useState('overview');
   const [backendUrl, setBackendUrl] = useState('http://localhost:8000');
   const [backendConnected, setBackendConnected] = useState(false);
@@ -84,6 +84,11 @@ export default function App() {
   const scheduleData = useMemo(() => {
     return optimizeEnergySchedule(activeScenario, parsedDirectives);
   }, [activeScenario, parsedDirectives]);
+
+  // Compute unconstrained baseline schedule for diff comparison
+  const baselineData = useMemo(() => {
+    return getBaselineSchedule(activeScenario);
+  }, [activeScenario]);
 
   const handleReoptimize = () => {
     setIsOptimizing(true);
@@ -165,10 +170,11 @@ export default function App() {
               lang={lang}
             />
 
-            {/* Visual 24-Hour Dispatch Chart & SOC Line */}
+            {/* Visual 24-Hour Dispatch Chart & SOC Line with Explainability and Diff */}
             <DispatchChart
               scheduleData={scheduleData}
               rawScenario={activeScenario}
+              baselineData={baselineData}
               lang={lang}
             />
 
