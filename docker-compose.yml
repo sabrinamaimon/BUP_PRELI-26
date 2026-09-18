@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    environment:
+      - VITE_BACKEND_URL=http://backend:8000
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Optional backend container stub for Member 2 if running in unified compose
+  backend:
+    image: python:3.11-slim
+    command: >
+      sh -c "echo 'Backend service placeholder for Member 2. Run backend locally on port 8000.' && sleep infinity"
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
