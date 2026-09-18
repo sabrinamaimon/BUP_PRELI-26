@@ -10,11 +10,13 @@ The platform is deployed across dual high-availability cloud environments for ze
 | :--- | :--- | :--- |
 | **Judging Base API (Render)** | [`https://bup-preli-26.onrender.com`](https://bup-preli-26.onrender.com) | Canonical FastAPI judging endpoint (`/health` and `/optimize-energy`) |
 | **Interactive Cleantech Platform (Vercel)** | [`https://bup-preli-26.vercel.app`](https://bup-preli-26.vercel.app) | Full-stack interactive dashboard, visual dispatch simulator, bilingual toggle |
+| **Video Demonstration** | [`YouTube Walkthrough`](https://www.youtube.com/watch?v=dPf1Bo6IvYU) | Architectural overview, live optimization dispatch, and UI walkthrough |
 | **Source Code Repository** | [`https://github.com/sabrinamaimon/BUP_PRELI-26`](https://github.com/sabrinamaimon/BUP_PRELI-26) | Complete source tree, Docker orchestration, and test suites |
 
 ### Canonical Judging Endpoints
 * **`GET /health`**: Readiness endpoint returning HTTP 200 `{"status": "ok"}` (Zero login, zero VPN, CORS enabled).
 * **`POST /optimize-energy`**: 24-hour campus energy scheduling and natural language operator directive interpretation endpoint.
+* **Video Demonstration**: [YouTube System Walkthrough & Live Dispatch Demo](https://www.youtube.com/watch?v=dPf1Bo6IvYU)
 
 ---
 
