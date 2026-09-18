@@ -160,6 +160,16 @@ body.lang-bn {
   border-color: var(--border-glass-bright);
 }
 
+.power-flow-container {
+  padding: 1.75rem 2rem;
+  box-sizing: border-box;
+}
+
+.savings-banner {
+  padding: 1.25rem 1.75rem;
+  box-sizing: border-box;
+}
+
 /* =========================================================================
    1. Header Navigation (Full Width)
    ========================================================================= */

@@ -65,23 +65,27 @@ export function PowerFlowVisualizer({ scheduleData, rawScenario, lang }) {
   const strokeDashoffset = circumference - (socPct / 100) * circumference;
 
   return (
-    <div className="glass-panel power-flow-container" style={{ marginBottom: '2.5rem', width: '100%' }}>
+    <div className="glass-panel power-flow-container" style={{ marginBottom: '2.5rem', width: '100%', padding: '1.75rem 2rem', boxSizing: 'border-box' }}>
       {/* Top Banner: Lucrative Cost Savings & Efficiency */}
       <div className="savings-banner" style={{
         background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(6, 182, 212, 0.15))',
         border: '2px solid var(--border-glass-bright)',
         borderRadius: 'var(--radius-md)',
+        padding: '1.25rem 1.75rem',
         marginBottom: '2rem',
         display: 'flex',
         flexWrap: 'wrap',
         alignItems: 'center',
         justifyContent: 'space-between',
-        boxShadow: '0 8px 30px rgba(16, 185, 129, 0.15)'
+        gap: '1.5rem',
+        boxShadow: '0 8px 30px rgba(16, 185, 129, 0.15)',
+        boxSizing: 'border-box'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', minWidth: '280px' }}>
           <div style={{
             width: 52,
             height: 52,
+            minWidth: 52,
             borderRadius: '50%',
             background: 'linear-gradient(135deg, var(--primary-500), var(--primary-700))',
             display: 'flex',
@@ -96,9 +100,9 @@ export function PowerFlowVisualizer({ scheduleData, rawScenario, lang }) {
             <div style={{ fontSize: '0.8rem', fontWeight: 900, textTransform: 'uppercase', color: 'var(--primary-700)', letterSpacing: '0.08em' }}>
               {lang === 'bn' ? 'স্মার্ট এনার্জি সাশ্রয় বিশ্লেষণ' : 'Autonomous Optimization Efficiency Gain'}
             </div>
-            <div style={{ fontSize: '1.65rem', fontWeight: 900, color: 'var(--text-main)', letterSpacing: '-0.02em' }}>
-              {formatCurrency(savedCost, lang)} {lang === 'bn' ? 'সাশ্রয় নিশ্চিত' : 'Net Cost Savings'} 
-              <span style={{ fontSize: '1.1rem', color: 'var(--primary-600)', marginLeft: '0.75rem', fontWeight: 800 }}>
+            <div style={{ fontSize: '1.65rem', fontWeight: 900, color: 'var(--text-main)', letterSpacing: '-0.02em', display: 'flex', flexWrap: 'wrap', alignItems: 'baseline' }}>
+              <span>{formatCurrency(savedCost, lang)} {lang === 'bn' ? 'সাশ্রয় নিশ্চিত' : 'Net Cost Savings'}</span>
+              <span style={{ fontSize: '1.05rem', color: 'var(--primary-600)', marginLeft: '0.6rem', fontWeight: 800 }}>
                 ({formatNumber(savingsPct, lang)}% {lang === 'bn' ? 'সাশ্রয়ী' : 'Reduction'})
               </span>
             </div>
@@ -178,7 +182,7 @@ export function PowerFlowVisualizer({ scheduleData, rawScenario, lang }) {
       </div>
 
       {/* Hour Scrubber Slider with Glowing Track */}
-      <div style={{ marginBottom: '2.5rem' }}>
+      <div style={{ marginBottom: '2.5rem', padding: '0 0.25rem' }}>
         <input 
           type="range"
           min="0"
@@ -192,7 +196,7 @@ export function PowerFlowVisualizer({ scheduleData, rawScenario, lang }) {
             height: '8px'
           }}
         />
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', marginTop: '0.5rem', fontWeight: 700 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', marginTop: '0.5rem', fontWeight: 700, padding: '0 2px' }}>
           <span>00:00 (12 AM)</span>
           <span>06:00 (6 AM)</span>
           <span>12:00 (12 PM)</span>
@@ -204,21 +208,23 @@ export function PowerFlowVisualizer({ scheduleData, rawScenario, lang }) {
       {/* Interactive Power Flow Grid Nodes */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-        gap: '1.5rem',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
+        gap: '1.25rem',
         position: 'relative',
-        width: '100%'
+        width: '100%',
+        boxSizing: 'border-box'
       }}>
         {/* Node 1: Rooftop Solar PV */}
         <div className={`glass-panel ${solarUsed > 0 ? 'power-node-active' : ''}`} style={{
-          padding: '1.75rem',
+          padding: '1.5rem 1.25rem',
           textAlign: 'center',
           background: solarUsed > 0 ? 'rgba(16, 185, 129, 0.12)' : 'var(--bg-surface)',
-          borderColor: solarUsed > 0 ? 'var(--primary-500)' : 'var(--border-glass)'
+          borderColor: solarUsed > 0 ? 'var(--primary-500)' : 'var(--border-glass)',
+          boxSizing: 'border-box'
         }}>
           <div style={{
-            width: 58,
-            height: 58,
+            width: 56,
+            height: 56,
             borderRadius: '50%',
             background: 'rgba(16, 185, 129, 0.18)',
             color: 'var(--primary-600)',
@@ -228,7 +234,7 @@ export function PowerFlowVisualizer({ scheduleData, rawScenario, lang }) {
             margin: '0 auto 1rem auto',
             boxShadow: solarUsed > 0 ? '0 0 25px rgba(16, 185, 129, 0.5)' : 'none'
           }}>
-            <Sun size={30} className={solarUsed > 0 ? 'pulse-dot' : ''} style={{ background: 'transparent', boxShadow: 'none' }} />
+            <Sun size={28} strokeWidth={2.4} color="var(--primary-600)" />
           </div>
           <div style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
             {lang === 'bn' ? 'সোলার পিভি উৎপাদন' : 'Rooftop Solar PV'}
@@ -248,14 +254,15 @@ export function PowerFlowVisualizer({ scheduleData, rawScenario, lang }) {
 
         {/* Node 2: National Grid Import */}
         <div className={`glass-panel ${grid > 0 ? 'power-node-active' : ''}`} style={{
-          padding: '1.75rem',
+          padding: '1.5rem 1.25rem',
           textAlign: 'center',
           background: grid > 0 ? 'rgba(37, 99, 235, 0.1)' : 'var(--bg-surface)',
-          borderColor: grid > 0 ? 'var(--accent-blue)' : 'var(--border-glass)'
+          borderColor: grid > 0 ? 'var(--accent-blue)' : 'var(--border-glass)',
+          boxSizing: 'border-box'
         }}>
           <div style={{
-            width: 58,
-            height: 58,
+            width: 56,
+            height: 56,
             borderRadius: '50%',
             background: 'rgba(37, 99, 235, 0.18)',
             color: 'var(--accent-blue)',
@@ -265,7 +272,7 @@ export function PowerFlowVisualizer({ scheduleData, rawScenario, lang }) {
             margin: '0 auto 1rem auto',
             boxShadow: grid > 0 ? '0 0 25px rgba(37, 99, 235, 0.4)' : 'none'
           }}>
-            <Zap size={30} />
+            <Zap size={28} />
           </div>
           <div style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
             {lang === 'bn' ? 'গ্রিড বিদ্যুৎ আমদানি' : 'National Grid'}
@@ -285,31 +292,32 @@ export function PowerFlowVisualizer({ scheduleData, rawScenario, lang }) {
 
         {/* Node 3: Battery Energy Storage (BESS) with Circular Ring Gauge */}
         <div className={`glass-panel ${batteryAction !== 'idle' ? 'power-node-active' : ''}`} style={{
-          padding: '1.75rem',
+          padding: '1.5rem 1.25rem',
           textAlign: 'center',
           background: batteryAction !== 'idle' ? 'rgba(217, 119, 6, 0.1)' : 'var(--bg-surface)',
-          borderColor: batteryAction === 'charge' ? 'var(--accent-amber)' : batteryAction === 'discharge' ? 'var(--accent-rose)' : 'var(--border-glass)'
+          borderColor: batteryAction === 'charge' ? 'var(--accent-amber)' : batteryAction === 'discharge' ? 'var(--accent-rose)' : 'var(--border-glass)',
+          boxSizing: 'border-box'
         }}>
           {/* Circular SOC Ring Gauge */}
-          <div style={{ position: 'relative', width: 80, height: 80, margin: '0 auto 0.75rem auto' }}>
-            <svg width="80" height="80" style={{ transform: 'rotate(-90deg)' }}>
+          <div style={{ position: 'relative', width: 76, height: 76, margin: '0 auto 0.75rem auto' }}>
+            <svg width="76" height="76" style={{ transform: 'rotate(-90deg)' }}>
               <circle
-                cx="40"
-                cy="40"
-                r={radius}
+                cx="38"
+                cy="38"
+                r={32}
                 fill="transparent"
                 stroke="var(--border-glass)"
                 strokeWidth="6"
               />
               <circle
-                cx="40"
-                cy="40"
-                r={radius}
+                cx="38"
+                cy="38"
+                r={32}
                 fill="transparent"
                 stroke={batteryAction === 'charge' ? 'var(--accent-amber)' : batteryAction === 'discharge' ? 'var(--accent-rose)' : 'var(--primary-500)'}
                 strokeWidth="6"
-                strokeDasharray={circumference}
-                strokeDashoffset={strokeDashoffset}
+                strokeDasharray={2 * Math.PI * 32}
+                strokeDashoffset={2 * Math.PI * 32 - (socPct / 100) * 2 * Math.PI * 32}
                 strokeLinecap="round"
                 style={{ transition: 'stroke-dashoffset 0.5s ease' }}
               />
@@ -323,7 +331,7 @@ export function PowerFlowVisualizer({ scheduleData, rawScenario, lang }) {
               justifyContent: 'center',
               fontFamily: 'var(--font-mono)',
               fontWeight: 900,
-              fontSize: '0.9rem',
+              fontSize: '0.88rem',
               color: 'var(--text-main)'
             }}>
               {formatNumber(socPct, lang)}%
@@ -336,21 +344,22 @@ export function PowerFlowVisualizer({ scheduleData, rawScenario, lang }) {
           <div style={{ fontSize: '1.85rem', fontWeight: 900, color: 'var(--text-main)', fontFamily: 'var(--font-mono)', margin: '0.4rem 0' }}>
             {formatNumber(batterySoc, lang)} <span style={{ fontSize: '1rem' }}>kWh</span>
           </div>
-          <div style={{ fontSize: '0.85rem', fontWeight: 800, textTransform: 'uppercase', color: batteryAction === 'charge' ? 'var(--accent-amber)' : batteryAction === 'discharge' ? 'var(--accent-rose)' : 'var(--text-muted)' }}>
+          <div style={{ fontSize: '0.82rem', fontWeight: 800, textTransform: 'uppercase', color: batteryAction === 'charge' ? 'var(--accent-amber)' : batteryAction === 'discharge' ? 'var(--accent-rose)' : 'var(--text-muted)' }}>
             {batteryAction === 'charge' ? `▲ Charging +${formatNumber(batteryKwh, lang)} kWh` : batteryAction === 'discharge' ? `▼ Discharging -${formatNumber(batteryKwh, lang)} kWh` : '• Battery Idle'}
           </div>
         </div>
 
         {/* Node 4: Smart Campus Load */}
         <div className="glass-panel" style={{
-          padding: '1.75rem',
+          padding: '1.5rem 1.25rem',
           textAlign: 'center',
           background: 'rgba(6, 182, 212, 0.1)',
-          borderColor: 'var(--accent-cyan)'
+          borderColor: 'var(--accent-cyan)',
+          boxSizing: 'border-box'
         }}>
           <div style={{
-            width: 58,
-            height: 58,
+            width: 56,
+            height: 56,
             borderRadius: '50%',
             background: 'rgba(6, 182, 212, 0.18)',
             color: 'var(--accent-cyan)',
@@ -360,7 +369,7 @@ export function PowerFlowVisualizer({ scheduleData, rawScenario, lang }) {
             margin: '0 auto 1rem auto',
             boxShadow: '0 0 25px rgba(6, 182, 212, 0.4)'
           }}>
-            <Building2 size={30} />
+            <Building2 size={28} />
           </div>
           <div style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
             {lang === 'bn' ? 'ক্যাম্পাস বিদ্যুৎ চাহিদা' : 'Smart Campus Load'}
@@ -371,9 +380,9 @@ export function PowerFlowVisualizer({ scheduleData, rawScenario, lang }) {
           <div style={{ fontSize: '0.85rem', color: 'var(--primary-700)', fontWeight: 800 }}>
             {lang === 'bn' ? '১০০% নিশ্চিত ভারসাম্য' : '100% Demand Supplied'}
           </div>
-          <div style={{ marginTop: '0.75rem', display: 'inline-flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.75rem', color: 'var(--primary-700)', fontWeight: 800, background: 'rgba(6, 182, 212, 0.2)', padding: '0.2rem 0.6rem', borderRadius: 'var(--radius-full)' }}>
-            <Activity size={14} />
-            <span>Grid + Solar + BESS = Load</span>
+          <div style={{ marginTop: '0.75rem', display: 'inline-flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.72rem', color: 'var(--primary-700)', fontWeight: 800, background: 'rgba(6, 182, 212, 0.2)', padding: '0.2rem 0.6rem', borderRadius: 'var(--radius-full)' }}>
+            <Activity size={13} />
+            <span style={{ whiteSpace: 'nowrap' }}>Grid + Solar + BESS = Load</span>
           </div>
         </div>
       </div>
