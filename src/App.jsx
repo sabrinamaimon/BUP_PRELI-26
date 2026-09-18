@@ -24,6 +24,7 @@ import { translations, formatNumber } from './utils/localization';
 
 export default function App() {
   const [lang, setLang] = useState('en');
+  const [theme, setTheme] = useState('light'); // Default to modern Light Theme
   const [activeTab, setActiveTab] = useState('overview');
   const [backendUrl, setBackendUrl] = useState('http://localhost:8000');
   const [backendConnected, setBackendConnected] = useState(false);
@@ -54,6 +55,15 @@ export default function App() {
     };
     checkHealth();
   }, [backendUrl]);
+
+  // Handle Theme switching
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.body.classList.add('theme-dark');
+    } else {
+      document.body.classList.remove('theme-dark');
+    }
+  }, [theme]);
 
   // Toggle html body class for Bengali typography
   useEffect(() => {
@@ -96,6 +106,8 @@ export default function App() {
         setActiveTab={setActiveTab}
         lang={lang}
         setLang={setLang}
+        theme={theme}
+        setTheme={setTheme}
         backendConnected={backendConnected}
         scenarioId={activeScenario.scenario_id}
       />

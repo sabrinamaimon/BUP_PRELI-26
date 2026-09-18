@@ -9,7 +9,8 @@ import {
   Calendar, 
   QrCode, 
   Terminal, 
-  CheckCircle2 
+  Sun, 
+  Moon 
 } from 'lucide-react';
 import { translations } from '../utils/localization';
 
@@ -18,6 +19,8 @@ export function Navbar({
   setActiveTab, 
   lang, 
   setLang, 
+  theme,
+  setTheme,
   backendConnected,
   scenarioId 
 }) {
@@ -41,6 +44,10 @@ export function Navbar({
     setLang(prev => (prev === 'en' ? 'bn' : 'en'));
   };
 
+  const toggleTheme = () => {
+    setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
+  };
+
   return (
     <header className="nav-header">
       {/* =========================================================
@@ -61,7 +68,7 @@ export function Navbar({
         <div className="status-pill">
           <span className="pulse-dot"></span>
           <span>{scenarioId} • {t.liveStatus}</span>
-          <span style={{ color: backendConnected ? 'var(--primary-300)' : 'var(--accent-amber)', fontSize: '0.75rem' }}>
+          <span style={{ color: backendConnected ? 'var(--primary-600)' : 'var(--accent-amber)', fontSize: '0.75rem' }}>
             ({backendConnected ? t.connectedBackend : t.backendOffline})
           </span>
         </div>
@@ -84,14 +91,25 @@ export function Navbar({
           })}
         </div>
 
-        {/* Language Switcher Pill */}
+        {/* Toggles: Theme (Light/Dark) + Language (EN/বাংলা) */}
         <div className="nav-actions-group">
+          {/* Theme Switcher Button */}
           <button 
-            className="lang-toggle-btn"
+            className="icon-toggle-btn"
+            onClick={toggleTheme}
+            title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+          >
+            {theme === 'light' ? <Moon size={16} color="var(--primary-700)" /> : <Sun size={16} color="var(--primary-300)" />}
+            <span style={{ fontSize: '0.75rem' }}>{theme === 'light' ? 'Dark' : 'Light'}</span>
+          </button>
+
+          {/* Language Switcher Pill */}
+          <button 
+            className="icon-toggle-btn"
             onClick={toggleLanguage}
             title="Toggle English / বাংলা"
           >
-            <Globe size={16} strokeWidth={2.2} />
+            <Globe size={16} strokeWidth={2.2} color="var(--primary-600)" />
             <span>{lang === 'en' ? 'বাংলা' : 'English'}</span>
           </button>
         </div>
@@ -101,7 +119,7 @@ export function Navbar({
           MOBILE NAVIGATION (< 768px) - Strictly 2-Row Design
           ========================================================= */}
       <div className="mobile-nav">
-        {/* Row 1: Left 38x38 Hamburger, Center Brand, Right Language Switcher */}
+        {/* Row 1: Left 38x38 Hamburger, Center Brand, Right Toggles */}
         <div className="mobile-row-1">
           <button 
             className="hamburger-btn"
@@ -118,14 +136,27 @@ export function Navbar({
             <span>{t.brandName}</span>
           </div>
 
-          <button 
-            className="lang-toggle-btn"
-            onClick={toggleLanguage}
-            style={{ padding: '0.35rem 0.75rem', fontSize: '0.75rem' }}
-          >
-            <Globe size={14} strokeWidth={2.2} />
-            <span>{lang === 'en' ? 'বাংলা' : 'EN'}</span>
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            {/* Theme Toggle */}
+            <button 
+              className="icon-toggle-btn"
+              onClick={toggleTheme}
+              style={{ padding: '0.35rem 0.55rem' }}
+              title="Toggle Theme"
+            >
+              {theme === 'light' ? <Moon size={15} /> : <Sun size={15} />}
+            </button>
+
+            {/* Language Toggle */}
+            <button 
+              className="icon-toggle-btn"
+              onClick={toggleLanguage}
+              style={{ padding: '0.35rem 0.65rem', fontSize: '0.75rem' }}
+            >
+              <Globe size={14} strokeWidth={2.2} />
+              <span>{lang === 'en' ? 'বাংলা' : 'EN'}</span>
+            </button>
+          </div>
         </div>
 
         {/* Row 2: Location & Status Pill Spanning Full Width */}
