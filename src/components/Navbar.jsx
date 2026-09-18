@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { 
   Zap, 
   Menu, 
@@ -105,12 +106,12 @@ export function Navbar({
 
           {/* Language Switcher Pill */}
           <button 
-            className="icon-toggle-btn"
+            className="icon-toggle-btn lang-toggle-pill"
             onClick={toggleLanguage}
             title="Toggle English / বাংলা"
           >
             <Globe size={16} strokeWidth={2.2} color="var(--primary-600)" />
-            <span>{lang === 'en' ? 'বাংলা' : 'English'}</span>
+            <span style={{ fontWeight: 800 }}>{lang === 'en' ? 'বাংলা' : 'English'}</span>
           </button>
         </div>
       </div>
@@ -149,12 +150,13 @@ export function Navbar({
 
             {/* Language Toggle */}
             <button 
-              className="icon-toggle-btn"
+              className="icon-toggle-btn lang-toggle-pill"
               onClick={toggleLanguage}
-              style={{ padding: '0.35rem 0.65rem', fontSize: '0.75rem' }}
+              style={{ padding: '0.4rem 0.75rem', fontSize: '0.8rem' }}
+              title="বাংলা / English Toggle"
             >
-              <Globe size={14} strokeWidth={2.2} />
-              <span>{lang === 'en' ? 'বাংলা' : 'EN'}</span>
+              <Globe size={14} strokeWidth={2.2} color="var(--primary-600)" />
+              <span style={{ fontWeight: 800 }}>{lang === 'en' ? 'বাংলা' : 'EN'}</span>
             </button>
           </div>
         </div>
@@ -172,9 +174,9 @@ export function Navbar({
       </div>
 
       {/* =========================================================
-          Slide-Out Gesture Drawer (Mobile Menu)
+          Slide-Out Gesture Drawer (Mobile Menu) via Portal
           ========================================================= */}
-      {drawerOpen && (
+      {drawerOpen && typeof document !== 'undefined' && createPortal(
         <div className="mobile-drawer-backdrop" onClick={() => setDrawerOpen(false)}>
           <div className="mobile-drawer" onClick={e => e.stopPropagation()}>
             <div className="drawer-header">
@@ -190,6 +192,34 @@ export function Navbar({
                 aria-label="Close Drawer"
               >
                 <X size={20} strokeWidth={2.4} />
+              </button>
+            </div>
+
+            {/* Language & Theme Controls directly inside Drawer */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.6rem',
+              padding: '0.65rem 0.85rem',
+              background: 'rgba(16, 185, 129, 0.09)',
+              borderRadius: 'var(--radius-sm)',
+              border: '1.5px solid var(--border-glass)'
+            }}>
+              <button
+                className="icon-toggle-btn"
+                onClick={toggleLanguage}
+                style={{ flex: 1, justifyContent: 'center', padding: '0.55rem 0.85rem', fontSize: '0.875rem' }}
+              >
+                <Globe size={16} strokeWidth={2.2} color="var(--primary-600)" />
+                <span style={{ fontWeight: 800 }}>{lang === 'en' ? 'বাংলা সংস্করণ' : 'English Version'}</span>
+              </button>
+              <button
+                className="icon-toggle-btn"
+                onClick={toggleTheme}
+                style={{ padding: '0.55rem 0.85rem' }}
+                title="Toggle Theme"
+              >
+                {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
               </button>
             </div>
 
@@ -216,7 +246,8 @@ export function Navbar({
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </header>
   );

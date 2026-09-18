@@ -65,19 +65,17 @@ export function PowerFlowVisualizer({ scheduleData, rawScenario, lang }) {
   const strokeDashoffset = circumference - (socPct / 100) * circumference;
 
   return (
-    <div className="glass-panel" style={{ padding: '2rem', marginBottom: '2.5rem', width: '100%' }}>
+    <div className="glass-panel power-flow-container" style={{ marginBottom: '2.5rem', width: '100%' }}>
       {/* Top Banner: Lucrative Cost Savings & Efficiency */}
-      <div style={{
+      <div className="savings-banner" style={{
         background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(6, 182, 212, 0.15))',
         border: '2px solid var(--border-glass-bright)',
         borderRadius: 'var(--radius-md)',
-        padding: '1.25rem 2rem',
         marginBottom: '2rem',
         display: 'flex',
         flexWrap: 'wrap',
         alignItems: 'center',
         justifyContent: 'space-between',
-        gap: '1.5rem',
         boxShadow: '0 8px 30px rgba(16, 185, 129, 0.15)'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>

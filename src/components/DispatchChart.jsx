@@ -114,8 +114,14 @@ export function DispatchChart({ scheduleData, rawScenario, baselineData, lang })
         </div>
       )}
 
+      {/* Mobile Scroll Indicator */}
+      <div className="mobile-scroll-hint">
+        <span>👈 {lang === 'bn' ? '২৪ ঘণ্টার গ্রাফ স্ক্রল করে দেখুন (Swipe 24h)' : 'Swipe horizontally to view full 24 hours'} 👉</span>
+      </div>
+
       {/* 24-Hour Visual Bar Columns */}
-      <div className="chart-bars-wrap">
+      <div className="chart-scroll-wrap">
+        <div className="chart-bars-wrap">
         {hours.map((entry, idx) => {
           const raw = rawHours[idx];
           const isHovered = hoveredHour === idx;
@@ -194,6 +200,7 @@ export function DispatchChart({ scheduleData, rawScenario, baselineData, lang })
             </div>
           );
         })}
+        </div>
       </div>
 
       {/* Decision Intelligence Tooltip Inspector (Why this Decision?) */}
@@ -269,27 +276,29 @@ export function DispatchChart({ scheduleData, rawScenario, baselineData, lang })
           </span>
         </div>
 
-        <div className="soc-timeline-wrap">
-          {hours.map((entry, idx) => {
-            const pct = Math.round((entry.battery_energy_after_kwh / battery.capacity_kwh) * 100);
-            return (
-              <div 
-                key={idx}
-                className="soc-chip"
-                onClick={() => setHoveredHour(idx)}
-                style={{
-                  cursor: 'pointer',
-                  background: entry.battery_action === 'charge' ? 'rgba(245, 158, 11, 0.15)' : entry.battery_action === 'discharge' ? 'rgba(236, 72, 153, 0.15)' : 'var(--bg-surface)',
-                  borderColor: hoveredHour === idx ? 'var(--primary-600)' : entry.battery_action === 'charge' ? 'rgba(245, 158, 11, 0.4)' : entry.battery_action === 'discharge' ? 'rgba(236, 72, 153, 0.4)' : 'var(--border-glass)',
-                  transform: hoveredHour === idx ? 'translateY(-3px)' : 'none'
-                }}
-                title={`Hour ${idx}: ${entry.battery_energy_after_kwh} kWh (${pct}%) - Click to inspect`}
-              >
-                <div>{formatNumber(Math.round(entry.battery_energy_after_kwh), lang)}</div>
-                <div style={{ fontSize: '0.65rem', opacity: 0.75 }}>{formatNumber(idx, lang)}h</div>
-              </div>
-            );
-          })}
+        <div className="chart-scroll-wrap">
+          <div className="soc-timeline-wrap">
+            {hours.map((entry, idx) => {
+              const pct = Math.round((entry.battery_energy_after_kwh / battery.capacity_kwh) * 100);
+              return (
+                <div 
+                  key={idx} 
+                  className="soc-chip"
+                  onClick={() => setHoveredHour(idx)}
+                  style={{
+                    cursor: 'pointer',
+                    background: entry.battery_action === 'charge' ? 'rgba(245, 158, 11, 0.15)' : entry.battery_action === 'discharge' ? 'rgba(236, 72, 153, 0.15)' : 'var(--bg-surface)',
+                    borderColor: hoveredHour === idx ? 'var(--primary-600)' : entry.battery_action === 'charge' ? 'rgba(245, 158, 11, 0.4)' : entry.battery_action === 'discharge' ? 'rgba(236, 72, 153, 0.4)' : 'var(--border-glass)',
+                    transform: hoveredHour === idx ? 'translateY(-3px)' : 'none'
+                  }}
+                  title={`Hour ${idx}: ${entry.battery_energy_after_kwh} kWh (${pct}%) - Click to inspect`}
+                >
+                  <div>{formatNumber(Math.round(entry.battery_energy_after_kwh), lang)}</div>
+                  <div style={{ fontSize: '0.65rem', opacity: 0.75 }}>{formatNumber(idx, lang)}h</div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
