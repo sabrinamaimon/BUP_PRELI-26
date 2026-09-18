@@ -1,43 +1,60 @@
-# GridWise: LLM-Assisted Smart Campus Energy Optimizer
+# GridWise — Smart Campus Energy Optimization Platform
 **BUP CSE Fest 2026 Hackathon — Online Preliminary Round**
 
----
-
-## 1. Overview & Architecture
-
-GridWise is an automated energy scheduling and operator-directive interpretation system for the Bangladesh University of Professionals (BUP) smart campus. It consumes a 24-hour campus energy forecast (demand, rooftop solar, and hourly grid tariffs) alongside 1–3 unstructured, natural-language campus operator notes.
-
-The service uses a high-performance **LLM $\rightarrow$ Deterministic Guardrails $\rightarrow$ Linear Programming Optimizer** pipeline:
-1. **LLM Directive Interpreter:** Translates natural-language operator notes into structured, machine-checkable operational directives.
-2. **Deterministic Guardrails:** Strict post-processing layer verifying hour conventions (start-inclusive, end-exclusive $[13, 14]$ for 1 PM to 3 PM), non-negative bounds, solar factor semantics (remaining fraction), and strict `no_op` null-adjustment formatting.
-3. **SciPy HiGHS Optimizer:** Formulates the campus power flow into a 120-variable Linear Program (LP) solved in $< 10\text{ ms}$, guaranteeing global cost minimization while strictly obeying physical battery boundaries, charge/discharge rates, and end-of-day battery neutrality ($E_{23} = E_{\text{init}}$).
-4. **Independent Auditor:** Recalculates all totals directly from the generated schedule to guarantee zero discrepancy.
-
-```
-[ POST /optimize-energy ]
-           │
-           ▼
-[ Pydantic Schema Validation ]  ── Rejects malformed JSON with HTTP 400
-           │
-           ▼
-[ LLM Interpreter (Groq / Gemini) ]
-           │
-           ▼
-[ Deterministic Guardrail Layer ] ── Validates hours [0..23], types, clamps ranges
-           │
-           ▼
-[ SciPy HiGHS Linear Program ]  ── Minimizes total grid purchase cost
-           │
-           ▼
-[ Post-Solve Schedule Auditor ] ── Verifies energy balance & recalculates totals
-           │
-           ▼
-[ HTTP 200 JSON Response ]
-```
+GridWise is an enterprise-grade cleantech energy optimization platform for the Bangladesh University of Professionals (BUP) smart campus. It integrates rooftop solar photovoltaics (PV), battery energy storage systems (BESS), dynamic grid tariffs, an automated Linear Programming optimization engine, and a natural-language operator directive interpretation pipeline.
 
 ---
 
-## 2. Supported Directives
+## Architecture & System Overview
+
+```
+                                  ┌─────────────────────────────┐
+                                  │   Operator Natural Language │
+                                  │   Notes (1-3 Directives)    │
+                                  └──────────────┬──────────────┘
+                                                 │
+                                                 ▼
+┌─────────────────────────┐       ┌─────────────────────────────┐
+│  Campus 24h Telemetry   │       │ LLM / Semantic Interpreter  │
+│  Demand • Solar • Tariff│       │ (Groq / Gemini / Fallback)  │
+└────────────┬────────────┘       └──────────────┬──────────────┘
+             │                                   │
+             │   ┌───────────────────────────────┘
+             ▼   ▼
+┌─────────────────────────────────┐
+│ Deterministic Guardrail Layer   │
+│ • Valid Types • 0-23 Ascending  │
+│ • Range Bounds • No-Op Filter   │
+│ • Start-inclusive/End-exclusive │
+└────────────────┬────────────────┘
+                 │
+                 ▼
+┌─────────────────────────────────┐
+│ Mathematical Optimization Model │
+│ • SciPy HiGHS Linear Program    │
+│ • Energy Balance Constraints    │
+│ • Battery Bounds & Neutrality   │
+│ • Cost Minimization (SUM BDT)   │
+└────────────────┬────────────────┘
+                 │
+                 ▼
+┌─────────────────────────────────┐
+│ Production Outputs              │
+│ • Canonical Deployed HTTP API   │
+│ • Interactive React Cleantech UI│
+│ • Judge & Operator Test Suite   │
+└─────────────────────────────────┘
+```
+
+---
+
+## 1. Backend Service (Canonical Judging API)
+
+The backend provides the two canonical endpoints evaluated by the judging harness:
+- **`GET /health`**: Returns HTTP 200 `{"status": "ok"}`.
+- **`POST /optimize-energy`**: Accepts 24-hour scenario telemetry + operator notes, interprets directives, solves the cost-minimizing Linear Program, and returns the machine-checkable schedule.
+
+### Supported Directives
 
 | Directive Type | Meaning | Required Adjustment Shape |
 | :--- | :--- | :--- |
@@ -48,129 +65,69 @@ The service uses a high-performance **LLM $\rightarrow$ Deterministic Guardrails
 | `max_grid_window` | Restricts grid electricity import during specific hours. | `{"hours": [int...], "max_grid_kwh": float}` |
 | `no_op` | Distractor or irrelevant note with zero impact on today's schedule. | `null` (with `applies: false`) |
 
----
+### Backend Local Quickstart
 
-## 3. Environment Variables & Secret Handling
-
-The service reads configuration from environment variables or a local `.env` file. **Never commit secrets to git.**
-
-| Variable | Description | Default |
-| :--- | :--- | :--- |
-| `GROQ_API_KEY` | API Key for Groq Cloud (Ultra-low latency LLM) | `""` |
-| `GEMINI_API_KEY` | API Key for Google AI Studio (Fallback LLM) | `""` |
-| `GROQ_MODEL` | Groq Model Identifier | `llama-3.3-70b-versatile` |
-| `GEMINI_MODEL` | Gemini Model Identifier | `gemini-2.5-flash` |
-| `HOST` | Bind address | `0.0.0.0` |
-| `PORT` | Service port | `8000` |
-
-> [!NOTE]
-> If neither API key is provided, the backend seamlessly falls back to an offline deterministic rule-based extractor to guarantee zero crashes during offline evaluation or sandboxed judge runs.
-
----
-
-## 4. Local Quickstart (From Clean Environment)
-
-### Prerequisites
-- Python 3.11+
-- pip & venv
-- Git
-
-### Step-by-Step Setup
 ```bash
-# 1. Clone repository
-git clone <YOUR_REPO_URL>
-cd BUP_PRELI-26
-
-# 2. Navigate to backend directory
+# 1. Navigate to backend directory
 cd backend
 
-# 3. Create and activate a Python virtual environment
-# On Linux/macOS:
-python3 -m venv .venv
-source .venv/bin/activate
-
-# On Windows (PowerShell):
+# 2. Setup Python virtual environment
 python -m venv .venv
-.\.venv\Scripts\Activate.ps1
+# On Linux/macOS: source .venv/bin/activate
+# On Windows: .\.venv\Scripts\Activate.ps1
 
-# 4. Install dependencies
+# 3. Install backend dependencies
 pip install -r requirements.txt
 
-# 5. Configure environment variables (optional for live LLM)
+# 4. Optional: Set API keys for live LLM
 cp .env.example .env
-# Edit .env and insert your GROQ_API_KEY or GEMINI_API_KEY
 
-# 6. Start the API service
+# 5. Start the backend service
 uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
 
----
-
-## 5. Verification & Testing
-
-### 1. Test Health Endpoint
+### Backend Testing & Verification
 ```bash
-curl http://127.0.0.1:8000/health
-```
-**Expected Response:**
-```json
-{"status": "ok"}
-```
+# Run complete test suite (12 tests)
+pytest backend/tests/ -v
 
-### 2. Test Energy Optimization Endpoint (Public Sample Case)
-```bash
-curl -X POST http://127.0.0.1:8000/optimize-energy \
-  -H "Content-Type: application/json" \
-  -d @tests/sample_request.json
-```
-
-### 3. Run Automated Pytest Suite
-```bash
-# From the backend directory
-pytest tests/ -v
-```
-
-### 4. Run CLI Validation Script
-```bash
-# From repository root
+# Run CLI verification tool
 python scripts/test_endpoint.py --url http://127.0.0.1:8000
 ```
 
----
-
-## 6. Docker Fallback Image
-
-### Building the Image Locally
+### Backend Docker Fallback
 ```bash
 cd backend
 docker build -t bup-gridwise-optimizer:latest .
-```
-
-### Running the Container
-```bash
-docker run -d \
-  -p 8000:8000 \
-  -e GROQ_API_KEY="your_groq_key_here" \
-  --name gridwise-service \
-  bup-gridwise-optimizer:latest
-```
-
-### Verify Container Health
-```bash
+docker run -d -p 8000:8000 --name gridwise-api bup-gridwise-optimizer:latest
 curl http://127.0.0.1:8000/health
 ```
 
 ---
 
-## 7. Mathematical Modeling & Solvers
-- **Formulation:** Linear Programming (LP) with decision variables $\{G_h, S^{\text{used}}_h, B^{\text{charge}}_h, B^{\text{discharge}}_h, E_h\}_{h=0}^{23}$.
-- **Solver:** `scipy.optimize.linprog(..., method='highs')` utilizing the HiGHS dual simplex / interior point engine.
-- **Complexity & Runtime:** 120 continuous variables, 49 linear equality constraints. Typical solve time: **$3 \text{ to } 8 \text{ ms}$**.
-- **Neutrality & Neutral Balancing:** Guarantees $E_{23} = E_{\text{initial}}$ and energy balance $\le 0.01\text{ kWh}$ absolute error.
+## 2. Frontend Cleantech Dashboard
+
+A modern, responsive Single Page Application (SPA) designed with the Sapphire Electric & Cleantech palette.
+
+### Key Features:
+- **Interactive 24h Energy Chart**: Visualizes Demand, Solar, Battery SoC, and Grid Import.
+- **Operator Directive Studio**: Live natural-language input with speech recognition and Bengali/English translation.
+- **Judge Compliance Harness**: Built-in test harness verifying compliance with the official rubric.
+- **Digital Energy Passport**: Generates verifiable dispatch credentials and summaries.
+
+### Frontend Quickstart:
+```bash
+# From repository root
+npm install
+npm run dev
+```
+Open `http://localhost:5173` in your browser.
 
 ---
 
-## 8. Known Limitations & Edge Cases Handled
-- **Paraphrasing Robustness:** Handles various time expressions ("1 PM to 3 PM", "13:00 to 15:00", "from 1 to 3 PM") and percentage formats ("drop to 20%", "80% reduction", "one-fifth output").
-- **Malformed Input Protection:** Returns HTTP 400 with structured validation messages for invalid JSON shapes or mismatched hour arrays ($N \neq 24$).
-- **Distractor Filtering:** Irrelevant notes correctly marked with `applies = false`, `directive_type = "no_op"`, and `structured_adjustment = null`.
+## 3. Mathematical Modeling & Solvers
+
+- **Optimization Formulation**: Linear Programming (LP) over 120 decision variables $\{G_h, S^{\text{used}}_h, B^{\text{charge}}_h, B^{\text{discharge}}_h, E_h\}_{h=0}^{23}$.
+- **Solver**: `scipy.optimize.linprog(..., method='highs')` (HiGHS dual simplex / interior point engine).
+- **Runtime Performance**: Solves a complete 24-hour scenario with directives in **$3 \text{ to } 8 \text{ ms}$**.
+- **Neutrality**: Guarantees end-of-day battery neutrality ($E_{23} = E_{\text{initial}}$) and hourly energy balance within $\le 0.01\text{ kWh}$.

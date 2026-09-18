@@ -1,11 +1,11 @@
-# Virtual environments
+# Virtual environments (Backend)
 .venv/
 venv/
 env/
 ENV/
 backend/.venv/
 
-# Byte-compiled / cache files
+# Byte-compiled / cache files (Backend)
 __pycache__/
 *.py[cod]
 *$py.class
@@ -14,13 +14,18 @@ __pycache__/
 # Environment files and API keys (CRITICAL - DO NOT COMMIT SECRETS)
 .env
 *.env
+.env.production
 backend/.env
 
-# Node / React dependencies (for Member 2)
+# Node / React dependencies & build output (Frontend)
 node_modules/
+dist/
+dist-ssr/
 frontend/dist/
+logs/
+*.log
 
-# OS / Editor files
+# OS & Editor directories
 .DS_Store
 Thumbs.db
 .vscode/
