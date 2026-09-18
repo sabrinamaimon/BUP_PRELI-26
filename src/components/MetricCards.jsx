@@ -28,42 +28,48 @@ export function MetricCards({ scheduleData, rawScenario, lang }) {
       value: `${formatNumber(Math.round(totalDemand), lang)} kWh`,
       subtext: `${formatNumber(24, lang)} ${lang === 'bn' ? 'ঘণ্টা পরিকল্পনা' : 'Hours Planning Horizon'}`,
       icon: Zap,
-      color: 'var(--accent-cyan)'
+      color: '#0284c7', // Cyan Blue
+      bgWrap: 'rgba(2, 132, 199, 0.12)'
     },
     {
       label: t.metricTotalGrid,
       value: `${formatNumber(Math.round(scheduleData.total_grid_kwh), lang)} kWh`,
-      subtext: `${lang === 'bn' ? 'গ্রিড আমদানি অংশ' : 'Grid Supply Ratio'}: ${formatNumber(100 - solarShare, lang)}%`,
+      subtext: `${lang === 'bn' ? 'গ্রিড ক্রয় অনুপাত' : 'Grid Supply Ratio'}: ${formatNumber(100 - solarShare, lang)}%`,
       icon: TrendingUp,
-      color: '#3b82f6'
+      color: '#2563eb', // Sapphire Blue
+      bgWrap: 'rgba(37, 99, 235, 0.12)'
     },
     {
       label: t.metricSolarUsed,
       value: `${formatNumber(Math.round(totalSolarUsed), lang)} kWh`,
-      subtext: `${lang === 'bn' ? 'সৌরশক্তির অবদান' : 'Solar Coverage'}: ${formatNumber(solarShare, lang)}%`,
+      subtext: `${lang === 'bn' ? 'সৌরশক্তি অবদান' : 'Solar Coverage'}: ${formatNumber(solarShare, lang)}%`,
       icon: Sun,
-      color: 'var(--primary-400)'
+      color: '#059669', // Cleantech Emerald
+      bgWrap: 'rgba(5, 150, 105, 0.12)'
     },
     {
       label: t.metricTotalCost,
       value: formatCurrency(scheduleData.total_cost_bdt, lang),
-      subtext: `${lang === 'bn' ? 'সর্বনিম্ন খরচ নিশ্চিত' : 'Optimized Procurement'}`,
+      subtext: `${lang === 'bn' ? 'সর্বনিম্ন অপ্টিমাইজড খরচ' : 'Cost Minimized'}`,
       icon: Coins,
-      color: 'var(--accent-amber)'
+      color: '#d97706', // Amber Gold
+      bgWrap: 'rgba(217, 119, 6, 0.12)'
     },
     {
       label: t.metricPeakLoad,
       value: `${formatNumber(Math.round(scheduleData.peak_grid_kwh), lang)} kW`,
       subtext: `${lang === 'bn' ? 'পিক লোড শেভিং সম্পন্ন' : 'Peak Shaved via BESS'}`,
       icon: BatteryCharging,
-      color: '#ec4899'
+      color: '#7c3aed', // Royal Violet
+      bgWrap: 'rgba(124, 58, 237, 0.12)'
     },
     {
       label: t.metricBatteryNeutrality,
       value: isNeutral ? (lang === 'bn' ? '১০০% নিরপেক্ষ' : '100% Balanced') : (lang === 'bn' ? 'অসামঞ্জস্য' : 'Imbalanced'),
       subtext: `${formatNumber(initialBat, lang)} kWh → ${formatNumber(finalBat, lang)} kWh`,
       icon: CheckCircle2,
-      color: isNeutral ? 'var(--primary-400)' : 'var(--accent-rose)'
+      color: isNeutral ? '#059669' : '#e11d48',
+      bgWrap: isNeutral ? 'rgba(5, 150, 105, 0.12)' : 'rgba(225, 29, 72, 0.12)'
     }
   ];
 
@@ -75,7 +81,7 @@ export function MetricCards({ scheduleData, rawScenario, lang }) {
           <div key={idx} className="glass-panel metric-card">
             <div className="metric-header">
               <span className="metric-label">{card.label}</span>
-              <div className="metric-icon-wrap" style={{ color: card.color }}>
+              <div className="metric-icon-wrap" style={{ color: card.color, background: card.bgWrap }}>
                 <Icon size={18} strokeWidth={2.4} />
               </div>
             </div>
